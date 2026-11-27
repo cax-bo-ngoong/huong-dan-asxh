@@ -126,6 +126,10 @@ const icon = (b, to) => `<i class="logo" style="background:${b.color}${to ? ";wi
 // Hình minh họa cho từng bước (ảnh điện thoại xuất từ tờ hướng dẫn)
 const VN = n => `anh/buoc/tich-hop-vneid-${n}.jpg`;
 const hinh = (...src) => `<div class="hinh-buoc">${src.map(s => `<img src="${s}" loading="lazy" alt="Hình minh họa bước">`).join("")}</div>`;
+// Bước nào dùng hình nào (mặc định bước i ↔ hình i). Viettel Money: tờ riêng bắt đầu từ màn hình nhập số điện thoại.
+const MAP_HINH = { viettelmoney: [[], [1], [2, 3], [4], [5], [6], [7], [8]] };
+const hinhBuoc = (b, i) => { const m = MAP_HINH[b.id]; const ds = m ? m[i] : [i + 1];
+  return ds && ds.length ? hinh(...ds.map(n => `anh/buoc/${b.id}-${n}.jpg`)) : ""; };
 const lui = (href, txt) => `<a class="quay-lai" href="${href}">← ${txt || "Quay lại"}</a>`;
 const nutHoTro = vd => `<a class="nut nut-phu" href="#/ho-tro?vd=${encodeURIComponent(vd)}">🙋 Làm không được? Để lại thông tin, cán bộ gọi lại</a>`;
 const CANH_BAO_ROOT = `<div class="canh-bao">⚠️ <b>Lưu ý:</b> điện thoại đã <b>jailbreak</b> (iPhone) hoặc <b>root</b> (Android) sẽ <b>không dùng được</b> VNeID và ứng dụng ngân hàng. <a href="#/jailbreak">Xem thêm</a></div>`;
@@ -245,7 +249,7 @@ TRANG["ngan-hang"] = (id) => {
   <div class="the-dt" style="margin:4px 0 6px">${icon(b, true)}<div><h2 style="margin:0">Mở tài khoản ${esc(b.name)}</h2><div class="phu">${esc(b.full)}</div></div></div>
   <div class="the"><h3 style="margin-top:0">Cần chuẩn bị</h3>
     <p>📱 Điện thoại có Internet, camera tốt, nên có <b>NFC</b> · 📶 SIM ${esc(b.sim || "")} <b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
-  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${hinh(`anh/buoc/${b.id}-${i + 1}.jpg`)}</li>`).join("")}</ol></div>
+  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${hinhBuoc(b, i)}</li>`).join("")}</ol></div>
   ${b.notes && b.notes.length ? `<div class="the"><h3 style="margin-top:0">📌 Lưu ý riêng của ${esc(b.name)}</h3><ul>${b.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>` : ""}
   <div class="the the-dt"><div style="flex:1">📞 Tổng đài ${esc(b.name)}</div>${b.hotline ? `<a class="so" href="tel:${b.hotline.replace(/\s/g, "")}">${esc(b.hotline)}</a>` : `<span class="phu">Xem trong ứng dụng</span>`}</div>
   <div class="nhom-nut">
