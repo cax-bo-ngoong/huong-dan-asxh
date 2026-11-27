@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong</title>
+<meta name="description" content="Hướng dẫn người dân xã Bờ Ngoong tích hợp tài khoản ngân hàng lên VNeID để nhận tiền an sinh xã hội.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<style>
+  :root { --do: #b3261e; --do2: #8c1d17; --nen: #f6f4f2; --chu: #1d1d1f; --xam: #666; --vien: #e4e0dc; --xanh: #1b7a3d; --vang: #fff4d6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 17px; line-height: 1.5; color: var(--chu); background: var(--nen); }
+  header { background: var(--do); color: #fff; padding: 14px 16px 16px; }
+  header .dv { font-size: 13px; letter-spacing: .5px; text-transform: uppercase; opacity: .9; }
+  header h1 { margin: 2px 0 0; font-size: 21px; line-height: 1.25; }
+  header a { color: #fff; text-decoration: none; }
+  main { max-width: 720px; margin: 0 auto; padding: 14px 14px 40px; }
+  h2 { font-size: 20px; margin: 6px 0 10px; color: var(--do2); }
+  h3 { font-size: 17px; margin: 14px 0 6px; }
+  p { margin: 6px 0; }
+  .the { background: #fff; border: 1px solid var(--vien); border-radius: 14px; padding: 14px; margin: 12px 0; }
+  .canh-bao { background: var(--vang); border: 1.5px solid #f0b43c; border-radius: 14px; padding: 12px 14px; margin: 12px 0; font-size: 15.5px; }
+  .nguy { background: #fde8e6; border: 1.5px solid #e59a94; border-radius: 14px; padding: 12px 14px; margin: 12px 0; }
+  .hoi { font-weight: 700; margin-bottom: 8px; }
+  .chon { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .nut, button { display: block; width: 100%; border: 0; border-radius: 12px; padding: 14px 12px; font-size: 17px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; font-family: inherit; }
+  .nut-chinh { background: var(--do); color: #fff; }
+  .nut-phu { background: #fff; color: var(--do2); border: 2px solid var(--do); }
+  .nut-xanh { background: var(--xanh); color: #fff; }
+  .nut-nhat { background: #efeae6; color: var(--chu); }
+  .chon .nut[aria-pressed="true"] { background: var(--do); color: #fff; }
+  .nhom-nut > * + * { margin-top: 10px; }
+  .buoc { counter-reset: b; list-style: none; padding: 0; margin: 0; }
+  .buoc > li { counter-increment: b; position: relative; padding: 10px 0 10px 46px; border-bottom: 1px dashed var(--vien); }
+  .buoc > li:last-child { border-bottom: 0; }
+  .buoc > li::before { content: counter(b); position: absolute; left: 0; top: 9px; width: 34px; height: 34px; border-radius: 50%; background: var(--do); color: #fff; font-weight: 800; display: grid; place-items: center; }
+  .buoc b, .nhan { color: var(--do2); }
+  .phu { color: var(--xam); font-size: 14.5px; }
+  .tim { width: 100%; font-size: 17px; padding: 12px 14px; border: 1.5px solid var(--vien); border-radius: 12px; margin-bottom: 10px; font-family: inherit; }
+  .luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .nh { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--vien); border-radius: 12px; padding: 10px; text-decoration: none; color: var(--chu); font-weight: 600; font-size: 15.5px; }
+  .nh.uu-tien { border: 2px solid #f0b43c; background: #fffaf0; }
+  .nh small { font-weight: 500; font-size: 12.5px; }
+  .nh i { flex: none; width: 34px; height: 34px; border-radius: 9px; color: #fff; font-style: normal; font-size: 10px; font-weight: 800; display: grid; place-items: center; text-align: center; line-height: 1; }
+  .the-dt { display: flex; gap: 10px; align-items: center; }
+  .the-dt .so { font-size: 22px; font-weight: 800; color: var(--do); text-decoration: none; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; }
+  input[type=text], input[type=tel], select, textarea { width: 100%; font-size: 17px; padding: 12px; border: 1.5px solid #cfc8c2; border-radius: 10px; font-family: inherit; background: #fff; }
+  textarea { min-height: 80px; }
+  .dong-y { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin-top: 14px; }
+  .dong-y input { width: 22px; height: 22px; flex: none; margin-top: 2px; }
+  .an { position: absolute; left: -9999px; }
+  .tb { padding: 12px; border-radius: 10px; margin-top: 12px; font-weight: 600; }
+  .tb.ok { background: #e3f4e8; color: #145c2e; }
+  .tb.loi { background: #fde8e6; color: #8c1d17; }
+  .quay-lai { display: inline-block; margin: 2px 0 6px; color: var(--do2); text-decoration: none; font-weight: 600; }
+  .hinh-vneid { background: #fff; border: 1px solid var(--vien); border-radius: 12px; padding: 10px; font-size: 14.5px; }
+  .hinh-vneid .o { border: 1px solid #ccc; border-radius: 8px; padding: 8px; margin: 4px 0 8px; }
+  .hinh-vneid .o.chon-o { outline: 3px solid #ffb400; }
+  .video { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 6px; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  footer { text-align: center; color: var(--xam); font-size: 13.5px; padding: 18px 14px 30px; }
+  .an-di { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <a href="#/"><div class="dv">Công an xã Bờ Ngoong</div>
+  <h1>Hướng dẫn tích hợp tài khoản an sinh xã hội</h1></a>
+</header>
+<main id="app"></main>
+<footer>
+  Công an xã Bờ Ngoong · Trang hướng dẫn miễn phí cho người dân.<br>
+  Cán bộ <b>không bao giờ</b> hỏi mật khẩu hay mã OTP của bạn.
+</footer>
+
+<script src="banks.js"></script>
+<script>
+// ======================== CẤU HÌNH ========================
+const CAU_HINH = {
+  // Link Web App Google Apps Script (Triển khai → Ứng dụng web → URL kết thúc bằng /exec)
+  WEBAPP_URL: "",
+  // Hiện số điện thoại CSKV công khai trên trang? (false: chỉ hiện tên CSKV)
+  HIEN_SDT_CSKV: false,
+  DIA_CHI: "Trụ sở Công an xã Bờ Ngoong",
+  SDT_TRUC_BAN: ""   // số trực ban của Công an xã (để trống nếu chưa công bố)
+};
+const VIDEO_DANG_NHAP = "zkz4HfmVzws";   // video YouTube hướng dẫn đăng nhập / lấy lại mật khẩu VNeID
+// Danh sách video ở mục "Xem video hướng dẫn" — thêm video: copy 1 dòng, đổi mã YouTube (phần sau youtu.be/) và tiêu đề
+const VIDEOS = [
+  { id: "zkz4HfmVzws", ten: "Hướng dẫn đăng nhập / lấy lại mật khẩu VNeID" }
+];
+const khungVideo = v => `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${v.id}" title="${v.ten}" loading="lazy"
+  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+  <a class="phu" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">Không xem được? Bấm để mở trên YouTube ↗</a>`;
+const DS_LANG = ["Làng Nú","Làng Ka","Làng Klú","Làng Khối Zố","Làng Hlú","Làng Lê Ngol","Làng Khối Zét","Làng Kênh Siêu","Làng Hố Lâm","Làng Grai Mek","Làng Phăm Ó","Làng Tơ Drăh","Làng Phăm Klăh","Làng Phăm Ngol","Làng Thoong Nha","Làng Pa Pết","Làng Puih Jri","Làng Amo","Thôn Đồng Tâm"];
+// CSKV dự phòng (khi chưa tải được từ Google Sheet) — theo tab Tổng hợp 11/2026
+let CSKV = {
+  "Làng Nú":"Nhữ Văn Toàn","Làng Ka":"Nhữ Văn Toàn","Làng Klú":"Nhữ Văn Toàn","Làng Khối Zố":"Nhữ Văn Toàn","Làng Khối Zét":"Nhữ Văn Toàn",
+  "Làng Hlú":"Phạm Minh Hà","Làng Phăm Ó":"Phạm Minh Hà","Làng Tơ Drăh":"Phạm Minh Hà","Làng Phăm Klăh":"Phạm Minh Hà",
+  "Làng Lê Ngol":"Nguyễn Đình Tiến","Làng Phăm Ngol":"Nguyễn Đình Tiến","Làng Thoong Nha":"Nguyễn Đình Tiến","Làng Pa Pết":"Nguyễn Đình Tiến",
+  "Làng Kênh Siêu":"Rơ Mah Alếp","Làng Hố Lâm":"Rơ Mah Alếp","Làng Grai Mek":"Rơ Mah Alếp",
+  "Làng Puih Jri":"Hoàng Minh Thắng","Làng Amo":"Hoàng Minh Thắng","Thôn Đồng Tâm":"Hoàng Minh Thắng"
+};
+let CSKV_SDT = {};
+const AB = {abbank:"ABB",acb:"ACB",agribank:"AGR",bacabank:"BAB",baovietbank:"BVIET",bidv:"BIDV",bvbank:"BVB",cake:"CAKE",coopbank:"COOP",hdbank:"HDB",kienlongbank:"KLB",lpbank:"LPB",mbbank:"MB",mbv:"MBV",mobifonemoney:"MOBI",momo:"MoMo",msb:"MSB",namabank:"NAB",ncb:"NCB",ocb:"OCB",pgbank:"PGB",pvcombank:"PVC",sacombank:"STB",saigonbank:"SGB",seabank:"SeAB",shinhanbank:"SHIN",techcombank:"TCB",tnex:"TNEX",tpbank:"TPB",vib:"VIB",vietabank:"VAB",vietbank:"VBB",vietcombank:"VCB",vietinbank:"VTB",viettelmoney:"VTM",vikkibank:"VIKKI",vnptmoney:"VNPT",vpbank:"VPB"};
+// Thứ tự ưu tiên trong danh sách chọn ngân hàng (các ngân hàng còn lại xếp theo chữ cái)
+const UU_TIEN = ["viettelmoney", "mbbank", "bidv", "ocb"];
+const BANKS_SX = BANKS.slice().sort((a, b) => {
+  const ia = UU_TIEN.indexOf(a.id), ib = UU_TIEN.indexOf(b.id);
+  if (ia >= 0 || ib >= 0) return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  return a.name.localeCompare(b.name, "vi");
+});
+
+// ======================== TIỆN ÍCH ========================
+const $app = document.getElementById("app");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const B = id => BANKS.find(b => b.id === id);
+const icon = (b, to) => `<i class="logo" style="background:${b.color}${to ? ";width:46px;height:46px;font-size:12px;border-radius:12px;flex:none;color:#fff;font-style:normal;font-weight:800;display:grid;place-items:center" : ""}">${AB[b.id] || esc(b.name.slice(0,4))}</i>`;
+const lui = (href, txt) => `<a class="quay-lai" href="${href}">← ${txt || "Quay lại"}</a>`;
+const nutHoTro = vd => `<a class="nut nut-phu" href="#/ho-tro?vd=${encodeURIComponent(vd)}">🙋 Làm không được? Để lại thông tin, cán bộ gọi lại</a>`;
+const CANH_BAO_ROOT = `<div class="canh-bao">⚠️ <b>Lưu ý:</b> điện thoại đã <b>jailbreak</b> (iPhone) hoặc <b>root</b> (Android) sẽ <b>không dùng được</b> VNeID và ứng dụng ngân hàng. <a href="#/jailbreak">Xem thêm</a></div>`;
+
+function luoiNganHang(link, loc) {
+  return `<input class="tim" type="search" placeholder="🔍 Gõ tên ngân hàng, ví dụ: Agribank" oninput="locNH(this.value)">
+  <div class="luoi" id="luoi">${BANKS_SX.filter(loc || (() => true)).map(b =>
+    `<a class="nh${UU_TIEN.includes(b.id) ? " uu-tien" : ""}" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}" href="${link(b)}">${icon(b)}<span>${esc(b.name)}${UU_TIEN.includes(b.id) ? '<br><small class="phu">⭐ Khuyên dùng</small>' : ""}</span></a>`).join("")}</div>`;
+}
+window.locNH = q => { q = q.trim().toLowerCase(); document.querySelectorAll("#luoi .nh").forEach(a => a.classList.toggle("an-di", q && a.dataset.ten.indexOf(q) < 0)); };
+
+// ======================== CÁC TRANG ========================
+const TRANG = {};
+
+TRANG[""] = () => {
+  const s = { vneid: null, tk: null };
+  $app.innerHTML = `
+  ${CANH_BAO_ROOT}
+  <div class="chon" style="margin:4px 0 2px"><a class="nut nut-xanh" href="#/video">🎬 Xem video</a><a class="nut nut-phu" href="pdf/tich-hop-vneid.pdf" target="_blank">🖨️ Tờ hướng dẫn PDF</a></div>
+  <div class="the">
+    <div class="hoi">1. Bạn có đăng nhập được ứng dụng <b>VNeID</b> không?</div>
+    <div class="chon"><button class="nut nut-nhat" data-q="vneid" data-v="1">✅ Được</button><button class="nut nut-nhat" data-q="vneid" data-v="0">❌ Không được</button></div>
+  </div>
+  <div class="the">
+    <div class="hoi">2. Bạn đã có <b>tài khoản ngân hàng</b> hoặc ví (Viettel Money, MoMo…) chưa?</div>
+    <div class="chon"><button class="nut nut-nhat" data-q="tk" data-v="1">✅ Đã có</button><button class="nut nut-nhat" data-q="tk" data-v="0">❌ Chưa có</button></div>
+  </div>
+  <div id="ket-qua"></div>
+  <div class="the nhom-nut">
+    <div class="hoi">Trường hợp khác</div>
+    <a class="nut nut-phu" href="#/lien-he">📵 Số điện thoại đăng ký VNeID không còn dùng / bị mất số</a>
+    <a class="nut nut-phu" href="#/ho-tro">🙋 Cần cán bộ hỗ trợ trực tiếp</a>
+  </div>`;
+  const ve = () => {
+    const kq = document.getElementById("ket-qua");
+    if (s.vneid === null || s.tk === null) { kq.innerHTML = ""; return; }
+    let h;
+    if (s.vneid && s.tk) h = ["Làm theo hướng dẫn <b>tích hợp tài khoản lên VNeID</b>.", "#/tich-hop", "Xem hướng dẫn tích hợp"];
+    else if (s.vneid && !s.tk) h = ["Bạn cần <b>mở tài khoản ngân hàng online</b> trước, rồi tích hợp lên VNeID.", "#/mo-tai-khoan", "Chọn ngân hàng để mở tài khoản"];
+    else if (!s.vneid && s.tk) h = ["Bạn cần <b>lấy lại mật khẩu VNeID</b> trước, rồi tích hợp tài khoản.", "#/mat-khau?sau=tich-hop", "Hướng dẫn lấy lại mật khẩu"];
+    else h = ["Làm lần lượt: <b>lấy lại mật khẩu VNeID</b> → <b>mở tài khoản ngân hàng</b> → <b>tích hợp</b>.", "#/mat-khau?sau=mo-tai-khoan", "Bắt đầu: lấy lại mật khẩu VNeID"];
+    kq.innerHTML = `<div class="the"><p>👉 ${h[0]}</p><a class="nut nut-chinh" href="${h[1]}">${h[2]} →</a></div>`;
+    kq.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  $app.querySelectorAll("[data-q]").forEach(b => b.onclick = () => {
+    s[b.dataset.q] = b.dataset.v === "1";
+    $app.querySelectorAll(`[data-q="${b.dataset.q}"]`).forEach(x => x.setAttribute("aria-pressed", x === b));
+    ve();
+  });
+};
+
+TRANG["tich-hop"] = (id) => {
+  if (!id) {
+    $app.innerHTML = `${lui("#/")}<h2>Tích hợp tài khoản lên VNeID</h2>
+      <p>Chọn <b>ngân hàng / ví</b> bạn đang có tài khoản:</p>${luoiNganHang(b => "#/tich-hop/" + b.id)}`;
+    return;
+  }
+  const b = B(id); if (!b) return di("#/tich-hop");
+  $app.innerHTML = `${lui("#/tich-hop", "Chọn ngân hàng khác")}
+  <h2>Tích hợp tài khoản ${esc(b.name)} lên VNeID</h2>
+  ${b.id === "vietbank" ? `<div class="canh-bao">Lưu ý: trong VNeID (11/2026) mục <b>VIETBANK</b> có lúc hiện màu xám, chưa chọn được. Nếu gặp, hãy thử lại sau hoặc bấm “Làm không được” bên dưới.</div>` : ""}
+  <div class="the"><ol class="buoc">
+    <li>Mở ứng dụng <b>VNeID</b>, đăng nhập (tài khoản định danh <b>mức 2</b>).</li>
+    <li>Chọn <b>Ví giấy tờ</b> → <b>Tích hợp thông tin</b> → <b>Tạo mới yêu cầu</b>.</li>
+    <li>Ở màn hình <b>“Nhập thông tin tích hợp”</b>, mục <b>Loại thông tin</b> chọn <b>tài khoản thanh toán / tài khoản ngân hàng</b>.</li>
+    <li>Mục <b>Nhà cung cấp</b>: gõ tìm và chọn <span class="nhan" style="font-weight:800">“${esc(b.vneid)}”</span>.
+      <div class="hinh-vneid" style="margin-top:8px"><div class="phu">Nhà cung cấp *</div><div class="o chon-o"><b>${esc(b.vneid)}</b> ▾</div></div></li>
+    <li>Nhập <b>số tài khoản</b> ${esc(b.name)} của bạn, tích ô đồng ý, bấm <b>Gửi yêu cầu</b>, nhập mật khẩu (passcode) VNeID.</li>
+    <li>Để nhận <b>tiền an sinh xã hội</b>: mở tài khoản vừa tích hợp → bấm <b>“Chọn làm TK hưởng ASXH”</b> → xác nhận.
+      <div class="phu">Hoặc vào mục <b>An sinh xã hội → Tài khoản hưởng an sinh xã hội</b>.</div></li>
+  </ol>
+  <p class="phu">Tên các mục có thể hơi khác tùy phiên bản VNeID. Tài khoản phải <b>đứng tên chính bạn</b>.</p></div>
+  <div class="nhom-nut">
+    <a class="nut nut-xanh" href="#/xong">✅ Tôi đã tích hợp xong</a>
+    <a class="nut nut-nhat" href="pdf/tich-hop-vneid.pdf" target="_blank">🖨️ Tải tờ hướng dẫn tích hợp VNeID (PDF)</a>
+    ${nutHoTro("Không tích hợp được tài khoản " + b.name + " lên VNeID")}
+  </div>`;
+};
+
+TRANG["mat-khau"] = (_, q) => {
+  const sau = q.get("sau") || "tich-hop";
+  $app.innerHTML = `${lui("#/")}<h2>Lấy lại mật khẩu VNeID</h2>
+  <div class="the"><h3 style="margin-top:0">🎬 Video hướng dẫn</h3>
+    ${khungVideo({ id: VIDEO_DANG_NHAP, ten: "Video hướng dẫn đăng nhập VNeID" })}</div>
+  <div class="the"><h3 style="margin-top:0">Các bước</h3><ol class="buoc">
+    <li>Mở ứng dụng <b>VNeID</b>. Ở màn hình đăng nhập bấm <b>“Quên mật khẩu”</b>.</li>
+    <li>Nhập <b>số định danh cá nhân</b> (12 số trên thẻ Căn cước) và <b>số điện thoại đã đăng ký VNeID</b>, bấm tiếp tục.</li>
+    <li>Nhập <b>mã OTP</b> được gửi về số điện thoại đó (tin nhắn SMS).</li>
+    <li>Đặt <b>mật khẩu mới</b> theo yêu cầu của ứng dụng (thường gồm chữ hoa, chữ thường, số và ký tự đặc biệt), rồi xác nhận.</li>
+    <li>Đăng nhập lại bằng mật khẩu mới. Lần đầu trên điện thoại mới, ứng dụng có thể yêu cầu xác thực thêm (OTP, khuôn mặt).</li>
+  </ol>
+  <p class="phu">Tên nút có thể hơi khác tùy phiên bản VNeID. Không nhờ người lạ làm hộ, không đọc mã OTP cho ai.</p></div>
+  <div class="nhom-nut">
+    <a class="nut nut-xanh" href="#/${sau}">✅ Đã đăng nhập được → ${sau === "mo-tai-khoan" ? "Mở tài khoản ngân hàng" : "Tích hợp tài khoản"}</a>
+    <a class="nut nut-phu" href="#/lien-he">📵 Không nhận được OTP / số điện thoại không còn dùng</a>
+    ${nutHoTro("Không lấy lại được mật khẩu VNeID")}
+  </div>`;
+};
+
+TRANG["mo-tai-khoan"] = () => {
+  $app.innerHTML = `${lui("#/")}<h2>Mở tài khoản ngân hàng online</h2>
+  <p>Chọn ngân hàng hoặc ví bạn muốn mở. Mở trên điện thoại, cần <b>thẻ Căn cước gắn chip</b> và <b>SIM chính chủ</b>.</p>
+  <div class="canh-bao">Chưa biết chọn ngân hàng nào? Chọn ngân hàng có <b>phòng giao dịch gần nhà</b> để tiện rút tiền và được hỗ trợ.</div>
+  ${luoiNganHang(b => "#/ngan-hang/" + b.id)}`;
+};
+
+TRANG["ngan-hang"] = (id) => {
+  const b = B(id); if (!b) return di("#/mo-tai-khoan");
+  const st = buocMoTaiKhoan(b);
+  $app.innerHTML = `${lui("#/mo-tai-khoan", "Chọn ngân hàng khác")}
+  <div class="the-dt" style="margin:4px 0 6px">${icon(b, true)}<div><h2 style="margin:0">Mở tài khoản ${esc(b.name)}</h2><div class="phu">${esc(b.full)}</div></div></div>
+  <div class="the"><h3 style="margin-top:0">Cần chuẩn bị</h3>
+    <p>📱 Điện thoại có Internet, camera tốt, nên có <b>NFC</b> · 📶 SIM ${esc(b.sim || "")} <b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
+  <div class="the"><ol class="buoc">${st.map(x => `<li>${x}</li>`).join("")}</ol></div>
+  ${b.notes && b.notes.length ? `<div class="the"><h3 style="margin-top:0">📌 Lưu ý riêng của ${esc(b.name)}</h3><ul>${b.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>` : ""}
+  <div class="the the-dt"><div style="flex:1">📞 Tổng đài ${esc(b.name)}</div>${b.hotline ? `<a class="so" href="tel:${b.hotline.replace(/\s/g, "")}">${esc(b.hotline)}</a>` : `<span class="phu">Xem trong ứng dụng</span>`}</div>
+  <div class="nhom-nut">
+    <a class="nut nut-xanh" href="#/tich-hop/${b.id}">✅ Đã mở xong → Tích hợp lên VNeID</a>
+    <a class="nut nut-nhat" href="pdf/${b.id}.pdf" target="_blank">🖨️ Tải tờ hướng dẫn có hình (PDF)</a>
+    ${nutHoTro("Không mở được tài khoản " + b.name)}
+  </div>`;
+};
+
+function buocMoTaiKhoan(b) {
+  const cai = `Mở <b>CH Play</b> (Android) hoặc <b>App Store</b> (iPhone), tìm <b>“${esc(b.app)}”</b> và cài đặt. Kiểm tra nhà phát triển là <b>${esc(b.name)}</b>.`;
+  const cccd = `Chụp <b>mặt trước</b> rồi <b>mặt sau</b> thẻ Căn cước: đặt thẻ vừa khung, đủ sáng, không lóa.`;
+  const nfc = `<b>Áp thẻ Căn cước vào lưng điện thoại</b> (gần camera) để đọc chip, giữ yên vài giây. Nên tháo ốp lưng.`;
+  const mat = `Nhìn thẳng camera, đưa <b>mặt vào khung</b> và làm theo hướng dẫn (quay trái, quay phải, chớp mắt). Bỏ kính, mũ, khẩu trang.`;
+  if (b.wallet) return [cai,
+    `Mở ứng dụng, nhập <b>số điện thoại${b.sim ? " " + esc(b.sim) : ""} chính chủ</b>, bấm Tiếp tục.`,
+    `Nhập <b>mã OTP</b> trong tin nhắn SMS, rồi <b>tạo mật khẩu</b> (không dùng ngày sinh).`,
+    cccd, nfc, mat,
+    `Vào mục <b>xác thực / định danh tài khoản</b> nếu app chưa tự chuyển. Kiểm tra thông tin, bổ sung nghề nghiệp, đồng ý điều khoản.`,
+    `Thấy chữ <b>“thành công”</b> là xong.`];
+  return [cai,
+    `Mở ứng dụng, bấm <b>“${esc(b.entry)}”</b>${b.entryNote ? " " + b.entryNote : ""}.`,
+    `Nhập <b>số điện thoại chính chủ</b>, bấm Tiếp tục, nhập <b>mã OTP</b> trong tin nhắn SMS.`,
+    cccd, nfc, mat,
+    b.s7 || `Kiểm tra thông tin (họ tên, ngày sinh, số giấy tờ). Bổ sung <b>nghề nghiệp, địa chỉ, email</b>, chọn <b>số tài khoản</b> nếu có, đồng ý điều khoản.`,
+    b.s8 || `Đặt <b>tên đăng nhập</b> và <b>mật khẩu</b>, nhập OTP xác nhận. Thấy chữ <b>“thành công”</b> là đã có tài khoản.`];
+}
+
+TRANG["lien-he"] = () => {
+  $app.innerHTML = `${lui("#/")}<h2>Liên hệ Công an xã Bờ Ngoong</h2>
+  <div class="nguy"><b>Số điện thoại đăng ký VNeID không còn dùng, bị mất số, hoặc sai thông tin đăng nhập?</b><br>
+  Bạn <b>không tự đổi được trên điện thoại</b>. Hãy liên hệ <b>Công an xã Bờ Ngoong</b> để được <b>đổi lại số điện thoại</b> cho tài khoản VNeID.</div>
+  <div class="the"><h3 style="margin-top:0">Khi đến, mang theo</h3>
+    <ul><li>💳 <b>Thẻ Căn cước</b> (bản gốc)</li><li>📱 <b>Điện thoại</b> và <b>SIM số mới</b> đang dùng</li></ul>
+    <p>📍 ${esc(CAU_HINH.DIA_CHI)}</p>
+    ${CAU_HINH.SDT_TRUC_BAN ? `<p>☎️ Trực ban: <a class="so" href="tel:${CAU_HINH.SDT_TRUC_BAN.replace(/\s/g, "")}">${esc(CAU_HINH.SDT_TRUC_BAN)}</a></p>` : ""}</div>
+  <div class="the"><h3 style="margin-top:0">Cảnh sát khu vực phụ trách làng bạn</h3>
+    <select id="chon-lang"><option value="">— Chọn thôn/làng —</option>${DS_LANG.map(l => `<option>${esc(l)}</option>`).join("")}</select>
+    <div id="cskv" style="margin-top:10px"></div></div>
+  <div class="nhom-nut">${nutHoTro("Mất số / đổi số điện thoại VNeID")}</div>`;
+  document.getElementById("chon-lang").onchange = e => {
+    const l = e.target.value, ten = CSKV[l], sdt = CSKV_SDT[l];
+    document.getElementById("cskv").innerHTML = !l ? "" : ten
+      ? `<p>👮 CSKV phụ trách <b>${esc(l)}</b>: <b>đồng chí ${esc(ten)}</b></p>` +
+        (CAU_HINH.HIEN_SDT_CSKV && sdt ? `<a class="nut nut-chinh" href="tel:${sdt.replace(/\s/g, "")}">📞 Gọi ${esc(sdt)}</a>` : `<p class="phu">Bấm “Làm không được” bên dưới để để lại số điện thoại, đồng chí ${esc(ten)} sẽ gọi lại cho bạn.</p>`)
+      : `<p class="phu">Chưa có thông tin CSKV của làng này.</p>`;
+  };
+};
+
+TRANG["ho-tro"] = (_, q) => {
+  const vd = q.get("vd") || "";
+  $app.innerHTML = `${lui("javascript:history.back()")}<h2>Để lại thông tin – cán bộ gọi lại</h2>
+  <div class="the">
+    <p class="phu">Chỉ cần <b>họ tên, thôn/làng, số điện thoại</b>. Cán bộ <b>không bao giờ</b> hỏi mật khẩu, mã OTP hay số thẻ ngân hàng.</p>
+    <form id="f" autocomplete="on" novalidate>
+      <label for="ten">Họ và tên *</label><input id="ten" name="ten" type="text" maxlength="80" autocomplete="name" required>
+      <label for="lang">Thôn / Làng *</label>
+      <select id="lang" name="lang" required><option value="">— Chọn thôn/làng —</option>${DS_LANG.map(l => `<option>${esc(l)}</option>`).join("")}<option value="__khac">Nơi khác (ghi rõ)</option></select>
+      <input id="lang-khac" type="text" maxlength="100" placeholder="Ghi rõ nơi ở" class="an-di" style="margin-top:8px">
+      <label for="sdt">Số điện thoại đang dùng *</label><input id="sdt" name="sdt" type="tel" inputmode="numeric" maxlength="15" autocomplete="tel" placeholder="Ví dụ: 0912345678" required>
+      <label for="vande">Bạn gặp vấn đề gì?</label><input id="vande" name="vande" type="text" maxlength="200" value="${esc(vd)}">
+      <label for="ghichu">Ghi thêm (nếu có)</label><textarea id="ghichu" name="ghichu" maxlength="500" placeholder="Ví dụ: buổi chiều mới nghe máy được"></textarea>
+      <input class="an" id="website" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="dong-y"><input id="dongy" type="checkbox"> <span>Tôi đồng ý cung cấp họ tên, thôn/làng, số điện thoại để <b>Công an xã Bờ Ngoong</b> liên hệ hỗ trợ. Thông tin chỉ dùng cho việc hỗ trợ này.</span></label>
+      <button class="nut-chinh" style="margin-top:14px" type="submit" id="gui">Gửi thông tin</button>
+      <div id="tb"></div>
+    </form>
+  </div>`;
+  const $l = document.getElementById("lang"), $k = document.getElementById("lang-khac");
+  $l.onchange = () => $k.classList.toggle("an-di", $l.value !== "__khac");
+  document.getElementById("f").onsubmit = async e => {
+    e.preventDefault();
+    const tb = (m, ok) => document.getElementById("tb").innerHTML = `<div class="tb ${ok ? "ok" : "loi"}">${m}</div>`;
+    const sdt = document.getElementById("sdt").value.replace(/[^\d]/g, "").replace(/^84/, "0");
+    const lang = $l.value === "__khac" ? ("Nơi khác: " + $k.value.trim()) : $l.value;
+    const d = { ten: document.getElementById("ten").value.trim(), lang, sdt,
+      vande: document.getElementById("vande").value.trim(), ghichu: document.getElementById("ghichu").value.trim(),
+      dongy: document.getElementById("dongy").checked, website: document.getElementById("website").value };
+    if (d.ten.length < 2) return tb("Vui lòng nhập họ và tên.");
+    if (!$l.value || ($l.value === "__khac" && !$k.value.trim())) return tb("Vui lòng chọn thôn/làng.");
+    if (!/^0[35789]\d{8}$/.test(sdt)) return tb("Số điện thoại chưa đúng (10 số, bắt đầu bằng 03, 05, 07, 08, 09).");
+    if (!d.dongy) return tb("Vui lòng tích ô đồng ý.");
+    if (!CAU_HINH.WEBAPP_URL) return tb("Hệ thống chưa kết nối. Vui lòng liên hệ trực tiếp Công an xã.");
+    const nut = document.getElementById("gui"); nut.disabled = true; nut.textContent = "Đang gửi…";
+    try {
+      const r = await fetch(CAU_HINH.WEBAPP_URL, { method: "POST", body: JSON.stringify(d) });
+      const j = await r.json();
+      if (j.ok) { document.getElementById("f").innerHTML = `<div class="tb ok">✅ ${esc(j.thongBao || "Đã gửi thành công.")}<br><br>Vui lòng để ý điện thoại, cán bộ sẽ gọi cho bạn.</div><a class="nut nut-nhat" style="margin-top:12px" href="#/">Về trang đầu</a>`; return; }
+      tb(esc(j.loi || "Gửi chưa được, vui lòng thử lại."));
+    } catch (err) { tb("Không gửi được (mạng yếu?). Vui lòng thử lại sau ít phút."); }
+    nut.disabled = false; nut.textContent = "Gửi thông tin";
+  };
+};
+
+TRANG["jailbreak"] = () => {
+  $app.innerHTML = `${lui("#/")}<h2>Điện thoại bị jailbreak / root</h2>
+  <div class="the"><p><b>Jailbreak</b> (iPhone) và <b>root</b> (Android) là can thiệp sâu vào hệ điều hành. VNeID và ứng dụng ngân hàng <b>chặn</b> các máy này để bảo vệ tài khoản, nên <b>không cài hoặc không mở được</b>.</p>
+  <h3>Dấu hiệu</h3><ul><li>Ứng dụng báo <b>“thiết bị không an toàn”</b>, “thiết bị đã bị can thiệp”, hoặc tự thoát ngay khi mở.</li><li>Máy mua lại đã qua sửa chữa, cài phần mềm lạ.</li></ul>
+  <h3>Cách xử lý</h3><ul><li>Dùng <b>điện thoại khác</b> chưa bị can thiệp (của bạn hoặc người thân, nhưng tài khoản phải là của bạn).</li><li>Mang máy ra cửa hàng uy tín để <b>cài lại phần mềm gốc</b> (khôi phục cài đặt gốc).</li><li>Hoặc liên hệ Công an xã để được hướng dẫn.</li></ul></div>
+  <div class="nhom-nut">${nutHoTro("Điện thoại bị jailbreak/root, không dùng được ứng dụng")}</div>`;
+};
+
+TRANG["video"] = () => {
+  $app.innerHTML = `${lui("#/")}<h2>🎬 Video hướng dẫn</h2>
+  ${VIDEOS.map(v => `<div class="the"><h3 style="margin-top:0">${esc(v.ten)}</h3>${khungVideo(v)}</div>`).join("")}
+  <div class="nhom-nut"><a class="nut nut-chinh" href="#/">Bắt đầu làm theo hướng dẫn →</a></div>`;
+};
+
+TRANG["xong"] = () => {
+  $app.innerHTML = `<div class="the" style="text-align:center"><div style="font-size:54px">🎉</div><h2>Hoàn tất!</h2>
+  <p>Tài khoản của bạn đã được tích hợp lên VNeID. Khi có tiền an sinh xã hội, tiền sẽ chuyển vào tài khoản này.</p>
+  <p class="phu">Giữ kỹ mật khẩu, không cho người khác mượn tài khoản, không đọc mã OTP cho ai.</p>
+  <a class="nut nut-nhat" href="#/">Về trang đầu</a></div>`;
+};
+
+// ======================== ĐIỀU HƯỚNG ========================
+function di(h) { location.hash = h; }
+function moTrang() {
+  const h = location.hash.replace(/^#\/?/, "");
+  const [duong, qs] = h.split("?");
+  const [ten, id] = duong.split("/");
+  (TRANG[ten] || TRANG[""])(id ? decodeURIComponent(id) : "", new URLSearchParams(qs || ""));
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", moTrang);
+moTrang();
+
+// Lấy CSKV mới nhất từ Google Sheet (không có dữ liệu người dân)
+if (CAU_HINH.WEBAPP_URL) fetch(CAU_HINH.WEBAPP_URL).then(r => r.json()).then(j => {
+  if (j && j.cskv) Object.keys(j.cskv).forEach(l => { CSKV[l] = j.cskv[l].ten; CSKV_SDT[l] = j.cskv[l].sdt || ""; });
+}).catch(() => {});
+</script>
+</body>
+</html>
