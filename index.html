@@ -666,5 +666,14 @@ if (CAU_HINH.WEBAPP_URL) fetch(CAU_HINH.WEBAPP_URL).then(r => r.json()).then(j =
   if (j && j.cskv) Object.keys(j.cskv).forEach(l => { CSKV[l] = j.cskv[l].ten; CSKV_SDT[l] = j.cskv[l].sdt || ""; });
 }).catch(() => {});
 </script>
+<!-- Khung chat trợ lý (chạy trong iframe để không ảnh hưởng CSS/JS trang chính) -->
+<iframe id="khung-chat" src="thiet-ke-chat.html?nhung=1&amp;v=4" title="Trò chuyện với Công an xã" style="position:fixed;right:0;bottom:0;width:96px;height:96px;border:0;background:transparent;z-index:9999;transition:width .2s,height .2s"></iframe>
+<script>
+window.addEventListener('message', function (e) {
+  var f = document.getElementById('khung-chat'); if (!f || !e.data || !e.data.chat) return;
+  if (e.data.chat === 'mo') { f.style.width = Math.min(400, innerWidth - 16) + 'px'; f.style.height = Math.min(600, innerHeight - 16) + 'px'; }
+  else { f.style.width = '96px'; f.style.height = '96px'; }
+});
+</script>
 </body>
 </html>
