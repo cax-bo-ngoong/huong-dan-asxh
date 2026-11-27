@@ -13,12 +13,20 @@
 <meta property="og:image:height" content="630">
 <title>Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong</title>
 <meta name="description" content="Hướng dẫn người dân xã Bờ Ngoong tích hợp tài khoản ngân hàng lên VNeID để nhận tiền an sinh xã hội.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link rel="icon" type="image/jpeg" href="anh/huy-hieu.jpg">
+<link rel="apple-touch-icon" href="anh/huy-hieu.jpg">
 <style>
   :root { --do: #b3261e; --do2: #8c1d17; --nen: #f6f4f2; --chu: #1d1d1f; --xam: #666; --vien: #e4e0dc; --xanh: #1b7a3d; --vang: #fff4d6; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 17px; line-height: 1.5; color: var(--chu); background: var(--nen); }
-  header { background: #f8c846; color: #1d1d1f; padding: 14px 16px 14px; border-bottom: 3px solid #e0a800; }
+  header { background: #f8c846; color: #1d1d1f; padding: 14px 16px 14px; border-bottom: 3px solid #e0a800; text-align: center; }
+  header .dau-tieu-de { display: inline-flex; align-items: center; gap: 10px; text-align: left; }
+  header .huy-hieu { width: 52px; height: 52px; flex: none; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+  @media (max-width: 480px) {
+    header .huy-hieu { width: 44px; height: 44px; border-radius: 10px; }
+    header h1 { font-size: 18px; }
+    header .truc-ban { font-size: 14.5px; padding: 7px 12px; }
+  }
   header .dv { font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color: #8c1d17; font-weight: 700; }
   header h1 { margin: 2px 0 0; font-size: 21px; line-height: 1.25; color: #1d1d1f; }
   header a { color: inherit; text-decoration: none; }
@@ -78,6 +86,7 @@
   .hinh-buoc { display: flex; gap: 8px; justify-content: center; margin: 10px 0 4px; flex-wrap: wrap; }
   .hinh-buoc img { width: 150px; max-width: 46%; height: auto; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.12); background: #fff; }
   .hinh-buoc img:only-child { width: 180px; max-width: 70%; }
+  .hinh-buoc.ngang img, .hinh-buoc.ngang img:only-child { width: 440px; max-width: 100%; border-radius: 10px; }
   .gioi-thieu { background: #fffbea; border: 2px solid #f0c75a; border-radius: 14px; padding: 10px 12px; margin: 10px 0; }
   .gioi-thieu .gt-dong { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; padding: 3px 0; }
   .gioi-thieu .gt-dong > span { min-width: 118px; color: var(--xam); font-size: 15px; }
@@ -90,44 +99,57 @@
   .to-anh { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--vien); background: #fff; }
   .video { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 6px; }
   .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .chia-se { background: #fff; border: 2px solid #f0c75a; border-radius: 16px; padding: 14px; max-width: 420px; margin: 0 auto 16px; color: var(--chu); font-size: 15px; }
-  .cs-tieu-de { font-weight: 800; font-size: 17px; margin-bottom: 8px; }
-  .cs-qr { width: 210px; margin: 0 auto 6px; }
-  .cs-qr svg { display: block; width: 100%; height: auto; }
-  .cs-nut { display: grid; gap: 8px; margin-top: 10px; }
-  .cs-link { width: 100%; margin-top: 8px; font-size: 14px; padding: 8px; border: 1px dashed #cfc8c2; border-radius: 8px; text-align: center; color: var(--xam); background: #faf8f6; }
-  .cs-tb { margin-top: 6px; font-weight: 700; color: var(--xanh); min-height: 1em; }
+  /* Nút chia sẻ ở đầu trang, cạnh nút trực ban */
+  header .dau-nut { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+  header .dau-nut .truc-ban { margin-top: 0; }
+  header .nut-chia-se { display: inline-block; width: auto; margin: 0; border: 0; cursor: pointer; font-family: inherit; background: #b3261e; color: #fff; padding: 5px 11px; font-size: 13px; font-weight: 700; border-radius: 999px; line-height: normal; align-self: center; }
+  /* Thông báo nhỏ sau khi sao chép link */
+  .cs-tb { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 50; max-width: 92vw; background: #1d2a7b; color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,.25); display: none; text-align: center; }
+  .cs-tb.hien { display: block; }
+  /* Nút bắt đầu + popup khảo sát */
+  .nut-bat-dau { display: block; width: 100%; margin: 14px 0 6px; padding: 16px 12px; border: 0; border-radius: 16px; background: #1d2a7b; color: #fff; font: inherit; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 10px rgba(29,42,123,.3); }
+  .nut-bat-dau small { font-size: 14px; font-weight: 600; opacity: .9; }
+  #bang-ks { display: none; } #bang-ks.mo { display: block; }
+  .ks-tien { font-size: 13px; font-weight: 700; color: #8c1d17; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+  .ks-hoi { font-size: 18px; line-height: 1.45; margin-bottom: 12px; }
+  .ks-chon { display: grid; gap: 8px; }
+  .ks-chon .nut { margin: 0; text-align: left; }
+  .ks-lai { display: block; margin: 10px auto 0; width: auto; border: 0; background: none; color: #555; font: inherit; font-size: 15px; text-decoration: underline; cursor: pointer; }
+  /* Bảng chọn cách chia sẻ */
+  #bang-cs { display: none; }
+  #bang-cs.mo { display: block; }
+  .cs-nen { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 40; }
+  .cs-hop { position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); width: min(480px, 100%); background: #fff; border-radius: 18px 18px 0 0; padding: 14px 16px 18px; z-index: 41; box-shadow: 0 -4px 18px rgba(0,0,0,.2); }
+  .cs-dau { display: flex; align-items: center; justify-content: space-between; font-size: 17px; margin-bottom: 10px; }
+  .cs-x { width: auto; border: 0; background: #eee; border-radius: 50%; width: 34px; height: 34px; font-size: 16px; cursor: pointer; padding: 0; }
+  .cs-luoi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cs-muc { display: flex; flex-direction: column; align-items: center; gap: 6px; width: auto; margin: 0; padding: 10px 4px; border: 1px solid #eee; border-radius: 14px; background: #fafafa; color: #1d1d1f; font: inherit; font-size: 13.5px; font-weight: 700; text-decoration: none; cursor: pointer; }
+  .cs-muc i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; color: #fff; font-style: normal; font-weight: 800; font-size: 15px; }
   footer { text-align: center; color: var(--xam); font-size: 13.5px; padding: 18px 14px 30px; }
   .an-di { display: none; }
+  /* Gạch chân mỗi lần bấm vào nút/liên kết, tự tắt sau ~1,2 giây */
+  .gach-click { text-decoration: underline !important; text-decoration-thickness: 3px !important; text-underline-offset: 5px; text-decoration-color: #e3001b; }
 </style>
 </head>
 <body>
 <header>
-  <a href="#/"><div class="dv">Công an xã Bờ Ngoong</div>
-  <h1>Hướng dẫn tích hợp tài khoản an sinh xã hội</h1></a>
-  <a class="truc-ban" href="tel:02693502339">☎ Trực ban Công an xã: 0269 350 2339</a>
+  <a href="#/" class="dau-tieu-de"><img class="huy-hieu" src="anh/huy-hieu.jpg" alt="Huy hiệu Công an xã Bờ Ngoong" onerror="this.remove()">
+  <span><span class="dv" style="display:block">Công an xã Bờ Ngoong</span>
+  <h1>Hướng dẫn tích hợp tài khoản an sinh xã hội</h1></span></a>
+  <div class="dau-nut">
+    <a class="truc-ban" href="tel:02693502339">☎ Trực ban Công an xã: 0269 350 2339</a>
+    <button class="truc-ban nut-chia-se" type="button" onclick="chiaSe()">📤 Chia sẻ</button>
+  </div>
 </header>
+<div id="cs-tb" class="cs-tb" role="status"></div>
 <main id="app"></main>
 <footer>
-  <div class="chia-se">
-    <div class="cs-tieu-de">📤 Chia sẻ trang này cho người khác</div>
-    <div id="qr-chia-se" class="cs-qr"></div>
-    <div class="phu">Quét bằng <b>camera điện thoại</b> hoặc <b>Zalo</b> để mở trang</div>
-    <div class="cs-nut">
-      <button class="nut nut-chinh" type="button" onclick="chiaSe()">📤 Chia sẻ (Zalo, Messenger…)</button>
-      <a class="nut nut-nhat" href="anh/ma-qr.png" download="Ma-QR-huong-dan-ASXH-Bo-Ngoong.png">⬇️ Tải ảnh mã QR</a>
-      <button class="nut nut-phu" type="button" onclick="saoChep()">📋 Sao chép link</button>
-    </div>
-    <input id="cs-link" class="cs-link" readonly value="https://cax-bo-ngoong.github.io/huong-dan-asxh/" onclick="this.select()">
-    <div id="cs-tb" class="cs-tb"></div>
-  </div>
   Công an xã Bờ Ngoong · Trực ban: <a href="tel:02693502339" style="color:inherit;font-weight:700">0269 350 2339</a><br>
   Trang hướng dẫn miễn phí cho người dân.<br>
   Cán bộ <b>không bao giờ</b> hỏi mật khẩu hay mã OTP của bạn.
 </footer>
 
-<script src="banks.js?v=20261127-4"></script>
-<script src="qr.js?v=1"></script>
+<script src="banks.js?v=20261128-1"></script>
 <script>
 // ======================== CẤU HÌNH ========================
 const CAU_HINH = {
@@ -158,8 +180,10 @@ let CSKV = {
 let CSKV_SDT = {};
 const AB = {abbank:"ABB",acb:"ACB",agribank:"AGR",bacabank:"BAB",baovietbank:"BVIET",bidv:"BIDV",bvbank:"BVB",cake:"CAKE",coopbank:"COOP",hdbank:"HDB",kienlongbank:"KLB",lpbank:"LPB",mbbank:"MB",mbv:"MBV",mobifonemoney:"MOBI",momo:"MoMo",msb:"MSB",namabank:"NAB",ncb:"NCB",ocb:"OCB",pgbank:"PGB",pvcombank:"PVC",sacombank:"STB",saigonbank:"SGB",seabank:"SeAB",shinhanbank:"SHIN",techcombank:"TCB",tnex:"TNEX",tpbank:"TPB",vib:"VIB",vietabank:"VAB",vietbank:"VBB",vietcombank:"VCB",vietinbank:"VTB",viettelmoney:"VTM",vikkibank:"VIKKI",vnptmoney:"VNPT",vpbank:"VPB"};
 // Thứ tự ưu tiên trong danh sách chọn ngân hàng (các ngân hàng còn lại xếp theo chữ cái)
-const UU_TIEN = ["viettelmoney", "mbbank", "bidv", "ocb"];
-const BANKS_SX = BANKS.slice().sort((a, b) => {
+const UU_TIEN = ["viettelmoney", "mbbank"];
+// Chỉ hiện các ngân hàng / ví này trên trang (dữ liệu ngân hàng khác vẫn giữ trong banks.js, thêm id vào đây để hiện lại)
+const HIEN_NH = ["viettelmoney", "mbbank"];
+const BANKS_SX = BANKS.filter(b => HIEN_NH.includes(b.id)).sort((a, b) => {
   const ia = UU_TIEN.indexOf(a.id), ib = UU_TIEN.indexOf(b.id);
   if (ia >= 0 || ib >= 0) return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
   return a.name.localeCompare(b.name, "vi");
@@ -180,13 +204,29 @@ const nutTai = a => {
   return `<div class="tai">${LA_IOS ? ios + and : and + ios}</div>`;
 };
 // Hình minh họa cho từng bước (ảnh điện thoại xuất từ tờ hướng dẫn)
-const VN = n => `anh/buoc/tich-hop-vneid-${n}.jpg`;
+const VN = n => `anh/buoc/tich-hop-vneid-${n}.jpg?v=${PB_ANH}`;
+// Ảnh thật các bước tích hợp tài khoản ngân hàng + chọn làm tài khoản an sinh xã hội (11/2026)
+const TH = n => `anh/buoc/tich-hop-${n}.jpg?v=${PB_ANH}`;
+// Đổi số này mỗi khi thay ảnh để điện thoại người dân tải ảnh mới, không dùng ảnh cũ đã lưu
+const PB_ANH = "20261128-4";
 const hinh = (...src) => `<div class="hinh-buoc">${src.map(s => `<img src="${s}" loading="lazy" alt="Hình minh họa bước">`).join("")}</div>`;
-// Bước nào dùng hình nào (mặc định bước i ↔ hình i). Viettel Money: tờ riêng bắt đầu từ màn hình nhập số điện thoại.
-const MAP_HINH = { viettelmoney: [[], [1], [2, 3], [4], [5], [6], [7], [8]] };
+// Bước nào dùng hình nào (mặc định bước i ↔ hình i). Viettel Money: 9 hình có mũi tên (11/2026), bước 1 và bước cuối không có hình.
+const MAP_HINH = { viettelmoney: [[], [1], [2], [3], [4], [5], [6], [7], [8], [9], []] };
+// Ngân hàng có ảnh bước dạng slide ngang (ảnh rộng) — hiện to hơn
+const ANH_NGANG = ["mbbank"];
 const hinhBuoc = (b, i) => { const m = MAP_HINH[b.id]; const ds = m ? m[i] : [i + 1];
-  return ds && ds.length ? hinh(...ds.map(n => `anh/buoc/${b.id}-${n}.jpg`)) : ""; };
-// Mã giới thiệu (banks.js: gt) — thay bước cuối: khung ghi mã + nút chép + ảnh màn hình thật
+  const moi = b.id === "viettelmoney" || b.id === "mbbank";
+  const h = ds && ds.length ? hinh(...ds.map(n => `anh/buoc/${b.id}-${n}.jpg${moi ? "?v=" + PB_ANH : ""}`)) : "";
+  return ANH_NGANG.includes(b.id) ? h.replace('class="hinh-buoc"', 'class="hinh-buoc ngang"') : h; };
+// Khung mã giới thiệu (banks.js: gt): mã + nút chép + tỉnh + chi nhánh + ảnh màn hình thật.
+// Trong banks.js, chỗ nào ghi {GT} trong bước thì khung này hiện ở đó.
+const khungGT = b => { const g = b.gt; return `<div class="gioi-thieu" style="--mau:${b.color}">
+    <div class="gt-dong"><span>Mã giới thiệu</span><b class="gt-ma">${esc(g.ma)}</b><button type="button" class="gt-chep" data-ma="${esc(g.ma)}" onclick="chepMa(this)">📋 Chép mã</button></div>
+    <div class="phu">Nhập đúng sẽ hiện tên <b>${esc(g.ten)}</b>. Nếu app báo mã không đúng: kiểm tra lại, hoặc để trống ô này (không bắt buộc).</div>
+    <div class="gt-dong"><span>Tỉnh/Thành phố</span><b>${esc(g.tinh)}</b></div>
+    <div class="gt-dong"><span>Chi nhánh</span><b>${esc(g.cn)}</b></div>
+  </div>`; };
+// Mã giới thiệu — thay bước cuối (ngân hàng chưa có danh sách bước riêng)
 const buocGT = b => { const g = b.gt; return `Đặt <b>mật khẩu</b> và nhập lại mật khẩu, rồi kéo xuống mục <b>“Thông tin hoàn thiện hồ sơ”</b>, điền như sau:
   <div class="gioi-thieu" style="--mau:${b.color}">
     <div class="gt-dong"><span>Mã giới thiệu</span><b class="gt-ma">${esc(g.ma)}</b><button type="button" class="gt-chep" data-ma="${esc(g.ma)}" onclick="chepMa(this)">📋 Chép mã</button></div>
@@ -209,52 +249,75 @@ const lui = (href, txt) => `<a class="quay-lai" href="${href}">← ${txt || "Qua
 const nutHoTro = vd => `<a class="nut nut-phu" href="#/ho-tro?vd=${encodeURIComponent(vd)}">🙋 Làm không được? Để lại thông tin, cán bộ gọi lại</a>`;
 const CANH_BAO_ROOT = `<div class="canh-bao">⚠️ <b>Lưu ý:</b> điện thoại đã <b>jailbreak</b> (iPhone) hoặc <b>root</b> (Android) sẽ <b>không dùng được</b> VNeID và ứng dụng ngân hàng. <a href="#/jailbreak">Xem thêm</a></div>`;
 
-function luoiNganHang(link, loc) {
-  return `<input class="tim" type="search" placeholder="🔍 Gõ tên ngân hàng, ví dụ: Agribank" oninput="locNH(this.value)">
-  <div class="luoi" id="luoi">${BANKS_SX.filter(loc || (() => true)).map(b =>
-    `<a class="nh${UU_TIEN.includes(b.id) ? " uu-tien" : ""}" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}" href="${link(b)}">${icon(b)}<span>${esc(b.name)}${UU_TIEN.includes(b.id) ? '<br><small class="phu">⭐ Khuyên dùng</small>' : ""}</span></a>`).join("")}</div>`;
+function luoiNganHang(link, loc, them) {
+  return `<div class="luoi" id="luoi">${BANKS_SX.filter(loc || (() => true)).map(b =>
+    `<a class="nh${UU_TIEN.includes(b.id) ? " uu-tien" : ""}" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}" href="${link(b)}">${icon(b)}<span>${esc(b.name)}${UU_TIEN.includes(b.id) ? '<br><small class="phu">⭐ Khuyên dùng</small>' : ""}</span></a>`).join("")}${them || ""}</div>`;
 }
+// Ngân hàng khác (dùng cho mục tích hợp: người dân đã có tài khoản ở ngân hàng không có trong danh sách)
+const NH_KHAC = { id: "khac", name: "ngân hàng của bạn", vneid: "ngân hàng / ví của bạn", color: "#6b6b6b" };
 window.locNH = q => { q = q.trim().toLowerCase(); document.querySelectorAll("#luoi [data-ten]").forEach(a => a.classList.toggle("an-di", q && a.dataset.ten.indexOf(q) < 0)); };
 
 // ======================== CÁC TRANG ========================
 const TRANG = {};
 
 TRANG[""] = () => {
-  const s = { vneid: null, tk: null };
   $app.innerHTML = `
   <a class="nut nut-chinh nut-to" href="#/ho-tro">🙋 Cần cán bộ hỗ trợ trực tiếp<br><small>Để lại họ tên, làng, số điện thoại — cán bộ sẽ gọi lại</small></a>
   ${CANH_BAO_ROOT}
   <div class="chon" style="margin:4px 0 2px"><a class="nut nut-xanh" href="#/video">🎬 Xem video</a><a class="nut nut-phu" href="#/to/tich-hop-vneid">🖼️ Xem tờ hướng dẫn</a></div>
   <a class="nut nut-nhat" href="#/tai-app" style="margin:10px 0 2px">📲 Tải ứng dụng VNeID và ngân hàng</a>
-  <div class="the">
-    <div class="hoi">1. Bạn có đăng nhập được ứng dụng <b>VNeID</b> không?</div>
-    <div class="chon"><button class="nut nut-nhat" data-q="vneid" data-v="1">✅ Được</button><button class="nut nut-nhat" data-q="vneid" data-v="0">❌ Không được</button></div>
-  </div>
-  <div class="the">
-    <div class="hoi">2. Bạn đã có <b>tài khoản ngân hàng</b> hoặc ví (Viettel Money, MoMo…) chưa?</div>
-    <div class="chon"><button class="nut nut-nhat" data-q="tk" data-v="1">✅ Đã có</button><button class="nut nut-nhat" data-q="tk" data-v="0">❌ Chưa có</button></div>
-  </div>
-  <div id="ket-qua"></div>
-  <div class="the nhom-nut">
-    <div class="hoi">Trường hợp khác</div>
-    <a class="nut nut-phu" href="#/lien-he">📵 Số điện thoại đăng ký VNeID không còn dùng / bị mất số</a>
-  </div>`;
-  const ve = () => {
-    const kq = document.getElementById("ket-qua");
-    if (s.vneid === null || s.tk === null) { kq.innerHTML = ""; return; }
-    let h;
-    if (s.vneid && s.tk) h = ["Làm theo hướng dẫn <b>tích hợp tài khoản lên VNeID</b>.", "#/tich-hop", "Xem hướng dẫn tích hợp"];
-    else if (s.vneid && !s.tk) h = ["Bạn cần <b>mở tài khoản ngân hàng online</b> trước, rồi tích hợp lên VNeID.", "#/mo-tai-khoan", "Chọn ngân hàng để mở tài khoản"];
-    else if (!s.vneid && s.tk) h = ["Bạn cần <b>lấy lại mật khẩu VNeID</b> trước, rồi tích hợp tài khoản.", "#/mat-khau?sau=tich-hop", "Hướng dẫn lấy lại mật khẩu"];
-    else h = ["Làm lần lượt: <b>lấy lại mật khẩu VNeID</b> → <b>mở tài khoản ngân hàng</b> → <b>tích hợp</b>.", "#/mat-khau?sau=mo-tai-khoan", "Bắt đầu: lấy lại mật khẩu VNeID"];
-    kq.innerHTML = `<div class="the"><p>👉 ${h[0]}</p><a class="nut nut-chinh" href="${h[1]}">${h[2]} →</a></div>`;
-    kq.scrollIntoView({ behavior: "smooth", block: "center" });
+  <button type="button" class="nut nut-bat-dau" onclick="moKhaoSat()">▶️ Bắt đầu tích hợp<br><small>Trả lời 2 câu hỏi ngắn để biết cần làm gì</small></button>`;
+};
+
+// ======================== POPUP KHẢO SÁT: HỎI 2 CÂU → CHỈ ĐÚNG HƯỚNG DẪN ========================
+const KS_CAU = [
+  { hoi: "Bạn có <b>đăng nhập được</b> ứng dụng <b>VNeID</b> không?", chon: [
+    ["✅ Đăng nhập được", "vneid", 1],
+    ["❌ Không đăng nhập được (quên mật khẩu)", "vneid", 0],
+    ["📵 Số điện thoại đăng ký VNeID không còn dùng / bị mất số", "mat-so", 1]] },
+  { hoi: "Bạn đã có <b>tài khoản ngân hàng</b> hoặc ví (<b>Viettel Money</b>, <b>MB</b>…) chưa?", chon: [
+    ["✅ Đã có", "tk", 1],
+    ["❌ Chưa có", "tk", 0]] }
+];
+const ksKetQua = s => {
+  if (s["mat-so"]) return ["Bạn cần ra <b>Công an xã Bờ Ngoong</b> để <b>đổi lại số điện thoại</b> cho tài khoản VNeID trước.", "#/lien-he", "Xem cách xử lý mất số"];
+  if (s.vneid && s.tk) return ["Bạn đã sẵn sàng. Làm theo hướng dẫn <b>tích hợp tài khoản lên VNeID</b> và chọn <b>“Có”</b> làm tài khoản an sinh xã hội.", "#/tich-hop", "Xem hướng dẫn tích hợp"];
+  if (s.vneid && !s.tk) return ["Bạn cần <b>mở tài khoản</b> (Viettel Money hoặc MB) trước, rồi tích hợp lên VNeID.", "#/mo-tai-khoan", "Chọn nơi mở tài khoản"];
+  if (!s.vneid && s.tk) return ["Bạn cần <b>lấy lại mật khẩu VNeID</b> trước, rồi tích hợp tài khoản.", "#/mat-khau?sau=tich-hop", "Hướng dẫn lấy lại mật khẩu"];
+  return ["Làm lần lượt: <b>lấy lại mật khẩu VNeID</b> → <b>mở tài khoản</b> → <b>tích hợp</b>.", "#/mat-khau?sau=mo-tai-khoan", "Bắt đầu: lấy lại mật khẩu VNeID"];
+};
+window.moKhaoSat = () => {
+  let p = document.getElementById("bang-ks");
+  if (!p) { p = document.createElement("div"); p.id = "bang-ks"; document.body.appendChild(p); }
+  const s = {};
+  const ve = buoc => {
+    let noi;
+    if (buoc < KS_CAU.length) {
+      const c = KS_CAU[buoc];
+      noi = `<div class="ks-tien">Câu ${buoc + 1}/${KS_CAU.length}</div><div class="ks-hoi">${c.hoi}</div>
+        <div class="ks-chon">${c.chon.map((o, i) => `<button type="button" class="nut nut-nhat" data-i="${i}">${o[0]}</button>`).join("")}</div>
+        ${buoc > 0 ? `<button type="button" class="ks-lai" data-lui="1">← Câu trước</button>` : ""}`;
+    } else {
+      const h = ksKetQua(s);
+      noi = `<div class="ks-tien">Kết quả</div><div class="ks-hoi">👉 ${h[0]}</div>
+        <a class="nut nut-chinh" href="${h[1]}" data-di="1">${h[2]} →</a>
+        <button type="button" class="ks-lai" data-lam-lai="1">↺ Trả lời lại</button>`;
+    }
+    p.innerHTML = `<div class="cs-nen" data-dong="1"></div><div class="cs-hop ks-hop" role="dialog" aria-label="Khảo sát bắt đầu tích hợp">
+      <div class="cs-dau"><b>Bắt đầu tích hợp</b><button type="button" class="cs-x" data-dong="1" aria-label="Đóng">✕</button></div>${noi}</div>`;
+    p.onclick = e => {
+      const t = e.target.closest("[data-i],[data-dong],[data-lui],[data-lam-lai],[data-di]"); if (!t) return;
+      if (t.dataset.dong) return p.classList.remove("mo");
+      if (t.dataset.di) return p.classList.remove("mo");
+      if (t.dataset.lamLai) { Object.keys(s).forEach(k => delete s[k]); return ve(0); }
+      if (t.dataset.lui) return ve(buoc - 1);
+      const o = KS_CAU[buoc].chon[+t.dataset.i];
+      s[o[1]] = o[2] === 1;
+      if (o[1] === "mat-so") return ve(KS_CAU.length);    // mất số: không cần hỏi tiếp
+      ve(buoc + 1);
+    };
   };
-  $app.querySelectorAll("[data-q]").forEach(b => b.onclick = () => {
-    s[b.dataset.q] = b.dataset.v === "1";
-    $app.querySelectorAll(`[data-q="${b.dataset.q}"]`).forEach(x => x.setAttribute("aria-pressed", x === b));
-    ve();
-  });
+  ve(0); p.classList.add("mo");
 };
 
 TRANG["tich-hop"] = (id) => {
@@ -263,23 +326,24 @@ TRANG["tich-hop"] = (id) => {
       <p>Chọn <b>ngân hàng / ví</b> bạn đang có tài khoản:</p>${luoiNganHang(b => "#/tich-hop/" + b.id)}`;
     return;
   }
-  const b = B(id); if (!b) return di("#/tich-hop");
+  const b = id === "khac" ? NH_KHAC : B(id); if (!b) return di("#/tich-hop");
   $app.innerHTML = `${lui("#/tich-hop", "Chọn ngân hàng khác")}
   <h2>Tích hợp tài khoản ${esc(b.name)} lên VNeID</h2>
   ${b.id === "vietbank" ? `<div class="canh-bao">Lưu ý: trong VNeID (11/2026) mục <b>VIETBANK</b> có lúc hiện màu xám, chưa chọn được. Nếu gặp, hãy thử lại sau hoặc bấm “Làm không được” bên dưới.</div>` : ""}
   <div class="the"><ol class="buoc">
-    <li>Mở ứng dụng <b>VNeID</b>, đăng nhập (tài khoản định danh <b>mức 2</b>). Chưa có app thì tải tại đây:${nutTai(VNEID_APP)}${hinh(VN(1))}</li>
-    <li>Chọn <b>Ví giấy tờ</b> → <b>Tích hợp thông tin</b> → <b>Tạo mới yêu cầu</b>.${hinh(VN(2), VN(3))}</li>
-    <li>Ở màn hình <b>“Nhập thông tin tích hợp”</b>, mục <b>Loại thông tin</b> chọn <b>tài khoản thanh toán / tài khoản ngân hàng</b>.${hinh(VN(4))}</li>
-    <li>Mục <b>Nhà cung cấp</b>: gõ tìm và chọn <span class="nhan" style="font-weight:800">“${esc(b.vneid)}”</span>.
-      <div class="hinh-vneid" style="margin-top:8px"><div class="phu">Nhà cung cấp *</div><div class="o chon-o"><b>${esc(b.vneid)}</b> ▾</div></div>
-      ${hinh(VN(5))}${b.id !== "viettelmoney" ? `<div class="phu" style="text-align:center">Hình ví dụ chọn Viettel Money — bạn chọn <b>${esc(b.vneid)}</b>.</div>` : ""}</li>
-    <li>Nhập <b>số tài khoản</b> ${esc(b.name)} của bạn, tích ô đồng ý, bấm <b>Gửi yêu cầu</b>, nhập mật khẩu (passcode) VNeID.
-      ${b.id === "viettelmoney" ? `<div class="phu">Số tài khoản Viettel Money: mở app Viettel Money → <b>“Mã QR của tôi”</b> → mục <b>“Số tài khoản ViettelPay”</b> (dãy số bắt đầu bằng 9704…).</div>` : ""}${hinh(VN(6))}</li>
-    <li>Để nhận <b>tiền an sinh xã hội</b>: mở tài khoản vừa tích hợp → bấm <b>“Chọn làm TK hưởng ASXH”</b> → xác nhận.
-      <div class="phu">Hoặc vào mục <b>An sinh xã hội → Tài khoản hưởng an sinh xã hội</b>.</div>${hinh(VN(7), VN(8))}</li>
+    <li>Mở ứng dụng <b>VNeID</b>, đăng nhập (tài khoản định danh <b>mức 2</b>), ở thanh dưới cùng bấm <b>“Ví giấy tờ”</b>. Chưa có app thì tải tại đây:${nutTai(VNEID_APP)}${hinh(TH(1))}</li>
+    <li>Bấm <b>“Tích hợp giấy tờ”</b> → nhập <b>passcode</b> 6 số của VNeID.${hinh(TH(2), TH(3))}</li>
+    <li>Bấm <b>“Tạo mới yêu cầu”</b>.${hinh(TH(4))}</li>
+    <li>Bấm ô <b>“Loại thông tin”</b>, chọn <b>“Tài khoản thanh toán”</b>.${hinh(TH(5))}</li>
+    <li>Bấm ô <b>“Nhà cung cấp”</b>, tìm và chọn <span class="nhan" style="font-weight:800">“${esc(b.vneid)}”</span>.
+      <div class="hinh-vneid" style="margin-top:8px"><div class="phu">Nhà cung cấp *</div><div class="o chon-o"><b>${esc(b.vneid)}</b> ▾</div></div>${hinh(TH(6), TH(7))}</li>
+    <li>Nhập <b>số tài khoản</b> ${esc(b.name)} của bạn vào ô <b>“Số tài khoản/thẻ/ví”</b>.
+      ${b.id === "viettelmoney" ? `<div class="phu">Số tài khoản Viettel Money: mở app Viettel Money → <b>“Mã QR của tôi”</b> → mục <b>“Số tài khoản ViettelPay”</b> (dãy số bắt đầu bằng 9704…).</div>` : ""}${hinh(TH(8))}</li>
+    <li>Ở dòng <b>“Chọn làm tài khoản An sinh xã hội?”</b> chọn <b>“Có”</b> để nhận <b>tiền an sinh xã hội</b> về tài khoản này. Tích ô <b>“Tôi xác nhận…”</b> → bấm <b>“Gửi yêu cầu”</b>.${hinh(TH(9))}</li>
+    <li>Màn hình báo <b>“Gửi yêu cầu thành công”</b>. Hệ thống tra cứu, phê duyệt rồi mới hiện trên ứng dụng.${hinh(TH(10))}</li>
+    <li>Kiểm tra: vào <b>An sinh xã hội → Tài khoản hưởng an sinh xã hội</b>, thấy tài khoản với trạng thái <b>“Đang hoạt động”</b> là xong.${hinh(TH(11))}</li>
   </ol>
-  <p class="phu">Tên các mục có thể hơi khác tùy phiên bản VNeID. Tài khoản phải <b>đứng tên chính bạn</b>.</p></div>
+  <p class="phu">Ảnh minh họa chụp từ ứng dụng thật (ví dụ ngân hàng khác) — bạn chọn <b>${esc(b.vneid)}</b>. Tên các mục có thể hơi khác tùy phiên bản VNeID. Tài khoản phải <b>đứng tên chính bạn</b>.</p></div>
   <div class="nhom-nut">
     <a class="nut nut-xanh" href="#/xong">✅ Tôi đã tích hợp xong</a>
     <a class="nut nut-nhat" href="#/to/tich-hop-vneid">🖼️ Xem cả tờ hướng dẫn tích hợp VNeID</a>
@@ -290,8 +354,6 @@ TRANG["tich-hop"] = (id) => {
 TRANG["mat-khau"] = (_, q) => {
   const sau = q.get("sau") || "tich-hop";
   $app.innerHTML = `${lui("#/")}<h2>Lấy lại mật khẩu VNeID</h2>
-  <div class="the"><h3 style="margin-top:0">🎬 Video hướng dẫn</h3>
-    ${khungVideo({ id: VIDEO_DANG_NHAP, ten: "Video hướng dẫn đăng nhập VNeID" })}</div>
   <div class="canh-bao">📌 Cần chuẩn bị: <b>thẻ Căn cước gắn chip</b> (bản gốc), <b>điện thoại có NFC</b>, và <b>SIM số điện thoại đã đăng ký VNeID</b> để nhận mã OTP.</div>
   <div class="the"><h3 style="margin-top:0">Các bước</h3><ol class="buoc">
     <li>Mở ứng dụng <b>VNeID</b>. Ở màn hình đăng nhập bấm <b>“Quên mật khẩu”</b>. Chưa có app thì tải tại đây:${nutTai(VNEID_APP)}${hinh(VN(9))}</li>
@@ -324,8 +386,8 @@ TRANG["ngan-hang"] = (id) => {
   $app.innerHTML = `${lui("#/mo-tai-khoan", "Chọn ngân hàng khác")}
   <div class="the-dt" style="margin:4px 0 6px">${icon(b, true)}<div><h2 style="margin:0">Mở tài khoản ${esc(b.name)}</h2><div class="phu">${esc(b.full)}</div></div></div>
   <div class="the"><h3 style="margin-top:0">Cần chuẩn bị</h3>
-    <p>📱 Điện thoại có Internet, camera tốt, nên có <b>NFC</b> · 📶 SIM ${esc(b.sim || "")} <b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
-  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${i === 0 ? nutTai(b) : ""}${b.gt && i === st.length - 1 ? "" : hinhBuoc(b, i)}</li>`).join("")}</ol></div>
+    <p>📱 Điện thoại có Internet, camera tốt, ${b.nfc ? "<b>bắt buộc có NFC</b>" : "nên có <b>NFC</b>"} · 📶 SIM ${b.sim ? esc(b.sim) + " " : "(mạng nào cũng được) "}<b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
+  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${b.gt ? x.replace("{GT}", khungGT(b)) : x}${i === 0 ? nutTai(b) : ""}${b.gt && !b.steps && i === st.length - 1 ? "" : hinhBuoc(b, i)}</li>`).join("")}</ol></div>
   ${b.notes && b.notes.length ? `<div class="the"><h3 style="margin-top:0">📌 Lưu ý riêng của ${esc(b.name)}</h3><ul>${b.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>` : ""}
   <div class="the the-dt"><div style="flex:1">📞 Tổng đài ${esc(b.name)}</div>${b.hotline ? `<a class="so" href="tel:${b.hotline.replace(/\s/g, "")}">${esc(b.hotline)}</a>` : `<span class="phu">Xem trong ứng dụng</span>`}</div>
   <div class="nhom-nut">
@@ -339,10 +401,10 @@ TRANG["to"] = (id) => {
   const b = B(id), ten = id === "tich-hop-vneid" ? "tích hợp tài khoản lên VNeID" : (b ? "mở tài khoản " + b.name : "");
   if (!ten) return di("#/");
   $app.innerHTML = `${lui("javascript:history.back()")}<h2>Tờ hướng dẫn ${esc(ten)}</h2>
-  <p class="phu">Kéo xuống để xem cả 2 mặt. Chạm vào ảnh để phóng to.</p>
-  <a href="anh/${id}.jpg" target="_blank"><img class="to-anh" src="anh/${id}.jpg" alt="Tờ hướng dẫn ${esc(ten)}"></a>
+  <p class="phu">Kéo xuống để xem hết các mặt. Chạm vào ảnh để phóng to.</p>
+  <a href="anh/${id}.jpg?v=${PB_ANH}" target="_blank"><img class="to-anh" src="anh/${id}.jpg?v=${PB_ANH}" alt="Tờ hướng dẫn ${esc(ten)}"></a>
   <div class="nhom-nut" style="margin-top:12px">
-    <a class="nut nut-nhat" href="pdf/${id}.pdf" target="_blank">🖨️ Tải bản PDF để in</a>
+    <a class="nut nut-nhat" href="pdf/${id}.pdf?v=${PB_ANH}" target="_blank">🖨️ Tải bản PDF để in</a>
     ${b ? `<a class="nut nut-phu" href="#/ngan-hang/${b.id}">← Về các bước mở tài khoản ${esc(b.name)}</a>` : `<a class="nut nut-phu" href="#/tich-hop">← Về các bước tích hợp</a>`}
   </div>`;
 };
@@ -444,12 +506,11 @@ TRANG["jailbreak"] = () => {
 TRANG["tai-app"] = () => {
   $app.innerHTML = `${lui("#/")}<h2>📲 Tải ứng dụng</h2>
   <p class="phu">Bấm nút đúng loại điện thoại: <b>App Store</b> cho iPhone, <b>CH Play</b> cho Android. Các nút dẫn thẳng tới <b>ứng dụng chính thức</b>.</p>
-  <div class="the the-tai"><div class="the-dt"><i class="logo" style="background:#b3261e;width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;font-style:normal;font-size:24px">🛡️</i>
+  <div class="the the-tai"><div class="the-dt"><img src="anh/vneid.png?v=${PB_ANH}" alt="Biểu tượng ứng dụng VNeID" style="width:46px;height:46px;border-radius:12px;flex:none">
     <div><b>VNeID</b><div class="phu">Định danh điện tử – Bộ Công an. Dùng để tích hợp tài khoản nhận an sinh xã hội.</div></div></div>${nutTai(VNEID_APP)}</div>
   <div class="canh-bao">⚠️ Chỉ cài ứng dụng từ các nút trên trang này hoặc tìm <b>đúng tên</b> trên CH Play / App Store.
     <b>Không cài</b> ứng dụng có chữ <b>“Được tài trợ”</b>, ứng dụng <b>vay tiền nhanh</b> hiện lẫn trong kết quả tìm kiếm.</div>
   <h3>Ngân hàng / ví điện tử</h3>
-  <input class="tim" type="search" placeholder="🔍 Gõ tên ngân hàng, ví dụ: Agribank" oninput="locNH(this.value)">
   <div id="luoi">${BANKS_SX.map(b => `<div class="the the-tai" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}">
     <div class="the-dt">${icon(b, true)}<div><b>${esc(b.name)}</b>${UU_TIEN.includes(b.id) ? ' <small class="phu">⭐ Khuyên dùng</small>' : ""}<div class="phu">Ứng dụng: ${esc(b.app)}</div></div></div>
     ${nutTai(b)}<a class="phu" href="#/ngan-hang/${b.id}">Xem cách mở tài khoản ${esc(b.name)} →</a></div>`).join("")}</div>`;
@@ -480,18 +541,61 @@ function moTrang() {
 window.addEventListener("hashchange", moTrang);
 moTrang();
 
-// ======================== CHIA SẺ TRANG + MÃ QR ========================
+// Mỗi lần bấm vào nút hoặc liên kết thì gạch chân phần đó một lúc
+document.addEventListener("click", e => {
+  const el = e.target.closest("a, button");
+  if (!el) return;
+  el.classList.add("gach-click");
+  clearTimeout(el._gachTimer);
+  el._gachTimer = setTimeout(() => el.classList.remove("gach-click"), 1200);
+});
+
+// ======================== CHIA SẺ TRANG ========================
 const URL_TRANG = "https://cax-bo-ngoong.github.io/huong-dan-asxh/";
-try { document.getElementById("qr-chia-se").innerHTML = QR.svg(QR.tao(URL_TRANG, "Q")); } catch (e) {}
-const thongBaoCS = m => { const t = document.getElementById("cs-tb"); t.textContent = m; setTimeout(() => { t.textContent = ""; }, 5000); };
+const thongBaoCS = m => { const t = document.getElementById("cs-tb"); t.textContent = m; t.classList.add("hien");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("hien"), 4000); };
+const LOI_CS = "Hướng dẫn tích hợp tài khoản nhận tiền an sinh xã hội (Công an xã Bờ Ngoong): ";
+const chepLink = async () => { try { await navigator.clipboard.writeText(URL_TRANG); return true; } catch (e) { return false; } };
 window.saoChep = async () => {
-  try { await navigator.clipboard.writeText(URL_TRANG); thongBaoCS("✅ Đã sao chép link — dán vào Zalo để gửi."); }
-  catch (e) { const i = document.getElementById("cs-link"); i.focus(); i.select(); thongBaoCS("Bấm giữ vào ô link ở trên để sao chép."); }
+  if (await chepLink()) thongBaoCS("✅ Đã sao chép link — dán vào Zalo, Messenger để gửi.");
+  else window.prompt("Sao chép link trang này:", URL_TRANG);
 };
-window.chiaSe = async () => {
-  const d = { title: "Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong",
-    text: "Hướng dẫn tích hợp tài khoản an sinh xã hội (Công an xã Bờ Ngoong):", url: URL_TRANG };
-  if (navigator.share) { try { await navigator.share(d); } catch (e) {} } else saoChep();
+const dongCS = () => document.getElementById("bang-cs").classList.remove("mo");
+// Bảng chọn cách chia sẻ: Zalo, Facebook, Messenger, SMS, sao chép link
+window.chiaSe = () => {
+  let b = document.getElementById("bang-cs");
+  if (!b) {
+    const u = encodeURIComponent(URL_TRANG), t = encodeURIComponent(LOI_CS + URL_TRANG);
+    b = document.createElement("div"); b.id = "bang-cs";
+    b.innerHTML = `<div class="cs-nen" onclick="dongCS()"></div>
+      <div class="cs-hop" role="dialog" aria-label="Chia sẻ trang">
+        <div class="cs-dau"><b>Chia sẻ trang này qua</b><button type="button" class="cs-x" onclick="dongCS()" aria-label="Đóng">✕</button></div>
+        <div class="cs-luoi">
+          <button type="button" class="cs-muc" data-cach="zalo"><i style="background:#0068ff">Zalo</i>Zalo</button>
+          <a class="cs-muc" href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener"><i style="background:#1877f2">f</i>Facebook</a>
+          <a class="cs-muc" href="fb-messenger://share/?link=${u}"><i style="background:#a334fa">m</i>Messenger</a>
+          <a class="cs-muc" href="sms:?&body=${t}"><i style="background:#2e7d32">✉</i>Tin nhắn SMS</a>
+          <button type="button" class="cs-muc" data-cach="chep"><i style="background:#555">🔗</i>Sao chép link</button>
+          ${navigator.share ? `<button type="button" class="cs-muc" data-cach="khac"><i style="background:#999">⋯</i>Cách khác</button>` : ""}
+        </div>
+        <div class="phu" style="text-align:center;margin-top:8px">${navigator.share ? "Bấm <b>Zalo</b> → chọn biểu tượng <b>Zalo</b> trong bảng hiện ra → chọn người nhận → Gửi." : "Bấm <b>Zalo</b>: link được chép sẵn, Zalo mở ra thì <b>dán</b> vào tin nhắn."}</div>
+      </div>`;
+    document.body.appendChild(b);
+    b.addEventListener("click", async e => {
+      const m = e.target.closest("[data-cach]"); if (!m) return;
+      const c = m.dataset.cach;
+      if (c === "chep") { await saoChep(); dongCS(); }
+      if (c === "khac") { try { await navigator.share({ title: document.title, text: LOI_CS, url: URL_TRANG }); } catch (x) {} dongCS(); }
+      if (c === "zalo") {
+        // Điện thoại: mở bảng chia sẻ của máy (có sẵn Zalo, link điền sẵn) — chạm "Zalo" là gửi
+        if (navigator.share) { dongCS(); try { await navigator.share({ title: document.title, text: LOI_CS, url: URL_TRANG }); } catch (x) {} return; }
+        const ok = await chepLink();
+        thongBaoCS(ok ? "✅ Đã chép link. Mở Zalo, chọn người nhận rồi dán vào tin nhắn." : "Mở Zalo rồi dán link: " + URL_TRANG);
+        dongCS(); location.href = "https://zalo.me/";
+      }
+    });
+  }
+  b.classList.add("mo");
 };
 
 // Lấy CSKV mới nhất từ Google Sheet (không có dữ liệu người dân)
