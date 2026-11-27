@@ -78,6 +78,15 @@
   .hinh-buoc { display: flex; gap: 8px; justify-content: center; margin: 10px 0 4px; flex-wrap: wrap; }
   .hinh-buoc img { width: 150px; max-width: 46%; height: auto; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.12); background: #fff; }
   .hinh-buoc img:only-child { width: 180px; max-width: 70%; }
+  .gioi-thieu { background: #fffbea; border: 2px solid #f0c75a; border-radius: 14px; padding: 10px 12px; margin: 10px 0; }
+  .gioi-thieu .gt-dong { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; padding: 3px 0; }
+  .gioi-thieu .gt-dong > span { min-width: 118px; color: var(--xam); font-size: 15px; }
+  .gioi-thieu .gt-dong > b { color: var(--mau, #1d2a7b); font-size: 19px; }
+  .gioi-thieu .gt-dong > b.gt-ma { font-size: 28px; letter-spacing: 1px; }
+  .gioi-thieu .gt-chep { display: inline-block; width: auto; padding: 7px 12px; font-size: 15px; background: #fff; color: var(--chu); border: 1.5px solid #cfc8c2; border-radius: 10px; }
+  .gioi-thieu .phu { margin: 2px 0 6px; }
+  .anh-that { display: block; max-width: 340px; margin: 10px auto 4px; }
+  .anh-that img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
   .to-anh { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--vien); background: #fff; }
   .video { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 6px; }
   .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -117,7 +126,7 @@
   Cán bộ <b>không bao giờ</b> hỏi mật khẩu hay mã OTP của bạn.
 </footer>
 
-<script src="banks.js?v=20261127-3"></script>
+<script src="banks.js?v=20261127-4"></script>
 <script src="qr.js?v=1"></script>
 <script>
 // ======================== CẤU HÌNH ========================
@@ -177,6 +186,25 @@ const hinh = (...src) => `<div class="hinh-buoc">${src.map(s => `<img src="${s}"
 const MAP_HINH = { viettelmoney: [[], [1], [2, 3], [4], [5], [6], [7], [8]] };
 const hinhBuoc = (b, i) => { const m = MAP_HINH[b.id]; const ds = m ? m[i] : [i + 1];
   return ds && ds.length ? hinh(...ds.map(n => `anh/buoc/${b.id}-${n}.jpg`)) : ""; };
+// Mã giới thiệu (banks.js: gt) — thay bước cuối: khung ghi mã + nút chép + ảnh màn hình thật
+const buocGT = b => { const g = b.gt; return `Đặt <b>mật khẩu</b> và nhập lại mật khẩu, rồi kéo xuống mục <b>“Thông tin hoàn thiện hồ sơ”</b>, điền như sau:
+  <div class="gioi-thieu" style="--mau:${b.color}">
+    <div class="gt-dong"><span>Mã giới thiệu</span><b class="gt-ma">${esc(g.ma)}</b><button type="button" class="gt-chep" data-ma="${esc(g.ma)}" onclick="chepMa(this)">📋 Chép mã</button></div>
+    <div class="phu">Nhập đúng sẽ hiện tên <b>${esc(g.ten)}</b>. Nếu app báo mã không đúng: kiểm tra lại, hoặc để trống ô này (không bắt buộc).</div>
+    <div class="gt-dong"><span>Tỉnh/Thành phố</span><b>${esc(g.tinh)}</b></div>
+    <div class="gt-dong"><span>Chi nhánh</span><b>${esc(g.cn)}</b></div>
+  </div>
+  Nhấn <b>Tiếp theo</b>. Thấy thông báo <b>thành công</b> là đã có tài khoản.
+  <a class="anh-that" href="anh/${esc(g.anh)}" target="_blank"><img src="anh/${esc(g.anh)}" loading="lazy" alt="Màn hình nhập mã giới thiệu và chọn chi nhánh ${esc(b.name)}"></a>`; };
+window.chepMa = async nut => {
+  const ma = nut.dataset.ma; let ok = false;
+  try { await navigator.clipboard.writeText(ma); ok = true; } catch (e) {
+    try { const t = document.createElement("textarea"); t.value = ma; t.setAttribute("readonly", ""); t.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(t); t.select(); ok = document.execCommand("copy"); t.remove(); } catch (e2) {}
+  }
+  nut.textContent = ok ? "✅ Đã chép, dán vào app" : "Hãy gõ tay mã này";
+  setTimeout(() => { nut.textContent = "📋 Chép mã"; }, 2500);
+};
 const lui = (href, txt) => `<a class="quay-lai" href="${href}">← ${txt || "Quay lại"}</a>`;
 const nutHoTro = vd => `<a class="nut nut-phu" href="#/ho-tro?vd=${encodeURIComponent(vd)}">🙋 Làm không được? Để lại thông tin, cán bộ gọi lại</a>`;
 const CANH_BAO_ROOT = `<div class="canh-bao">⚠️ <b>Lưu ý:</b> điện thoại đã <b>jailbreak</b> (iPhone) hoặc <b>root</b> (Android) sẽ <b>không dùng được</b> VNeID và ứng dụng ngân hàng. <a href="#/jailbreak">Xem thêm</a></div>`;
@@ -297,7 +325,7 @@ TRANG["ngan-hang"] = (id) => {
   <div class="the-dt" style="margin:4px 0 6px">${icon(b, true)}<div><h2 style="margin:0">Mở tài khoản ${esc(b.name)}</h2><div class="phu">${esc(b.full)}</div></div></div>
   <div class="the"><h3 style="margin-top:0">Cần chuẩn bị</h3>
     <p>📱 Điện thoại có Internet, camera tốt, nên có <b>NFC</b> · 📶 SIM ${esc(b.sim || "")} <b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
-  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${i === 0 ? nutTai(b) : ""}${hinhBuoc(b, i)}</li>`).join("")}</ol></div>
+  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${i === 0 ? nutTai(b) : ""}${b.gt && i === st.length - 1 ? "" : hinhBuoc(b, i)}</li>`).join("")}</ol></div>
   ${b.notes && b.notes.length ? `<div class="the"><h3 style="margin-top:0">📌 Lưu ý riêng của ${esc(b.name)}</h3><ul>${b.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>` : ""}
   <div class="the the-dt"><div style="flex:1">📞 Tổng đài ${esc(b.name)}</div>${b.hotline ? `<a class="so" href="tel:${b.hotline.replace(/\s/g, "")}">${esc(b.hotline)}</a>` : `<span class="phu">Xem trong ứng dụng</span>`}</div>
   <div class="nhom-nut">
@@ -336,7 +364,7 @@ function buocMoTaiKhoan(b) {
     `Nhập <b>số điện thoại chính chủ</b>, bấm Tiếp tục, nhập <b>mã OTP</b> trong tin nhắn SMS.`,
     cccd, nfc, mat,
     b.s7 || `Kiểm tra thông tin (họ tên, ngày sinh, số giấy tờ). Bổ sung <b>nghề nghiệp, địa chỉ, email</b>, chọn <b>số tài khoản</b> nếu có, đồng ý điều khoản.`,
-    b.s8 || `Đặt <b>tên đăng nhập</b> và <b>mật khẩu</b>, nhập OTP xác nhận. Thấy chữ <b>“thành công”</b> là đã có tài khoản.`];
+    b.gt ? buocGT(b) : (b.s8 || `Đặt <b>tên đăng nhập</b> và <b>mật khẩu</b>, nhập OTP xác nhận. Thấy chữ <b>“thành công”</b> là đã có tài khoản.`)];
 }
 
 TRANG["lien-he"] = () => {

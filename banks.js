@@ -31,8 +31,10 @@ window.BANKS = [
  entry:"Mở tài khoản", notes:["Cũng có thể mở tài khoản LPBank trực tuyến ngay trên VNeID."]},
 {id:"mbbank", ios:"1205807363", and:"com.mbmobile", vneid:"MBBank", name:"MB", full:"Ngân hàng TMCP Quân đội", app:"MB Bank", color:"#1d2a7b", hotline:"1900 545 426",
  entry:"Tạo tài khoản", entryNote:"rồi chọn <b>“Đăng ký ngay”</b>",
- s7:"Điền thông tin cá nhân, <b>chọn chi nhánh</b>, chọn số tài khoản (có thể chọn số đẹp).",
- s8:"Đặt <b>mật khẩu</b> và <b>mã PIN xác thực giao dịch (Digital OTP)</b>. Thấy thông báo thành công là xong."},
+ s7:"Điền thông tin cá nhân, chọn <b>số tài khoản</b> (có thể chọn số đẹp).",
+ s8:"Đặt <b>mật khẩu</b>. Ở mục <b>Thông tin hoàn thiện hồ sơ</b>: nhập mã giới thiệu <b>i954</b>, chọn <b>Gia Lai → PGD Chư Sê</b>, nhấn Tiếp theo. Thấy báo thành công là xong.",
+ // Mã giới thiệu Công an xã đưa (11/2026): hiện ở bước 8 trên web (khung + ảnh web/anh/<anh>) và trên tờ in
+ gt:{ma:"i954", ten:"Huỳnh Thị Mỹ Linh", tinh:"Gia Lai", cn:"PGD Chư Sê", anh:"mbbank-ma-gioi-thieu.jpg"}},
 {id:"mbv", ios:"6742386787", and:"com.mbv.mobilebanking", vneid:"MBV", name:"MBV", full:"Ngân hàng TNHH MTV Việt Nam Hiện Đại (tên cũ OceanBank)", app:"MBV Bank", color:"#003b7a", hotline:"1800 58 88 15",
  entry:"Mở tài khoản", notes:["MBV là tên mới của OceanBank từ 18/12/2024. Tài khoản MBV dùng app và tổng đài của MBV, <b>không dùng app MB Bank</b>.","Kiểm tra nhà phát triển trên CH Play/App Store là ngân hàng MBV trước khi cài."]},
 {id:"mobifonemoney", ios:"6448983826", and:"com.mobifone.mmdt", vneid:"MobiFone Money", name:"MobiFone Money", full:"Dịch vụ Mobile Money của MobiFone", app:"MobiFone Money", color:"#0066b3", hotline:"9090",
