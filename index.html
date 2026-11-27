@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8c846">
 <title>Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong</title>
 <meta name="description" content="Hướng dẫn người dân xã Bờ Ngoong tích hợp tài khoản ngân hàng lên VNeID để nhận tiền an sinh xã hội.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
@@ -10,10 +11,11 @@
   :root { --do: #b3261e; --do2: #8c1d17; --nen: #f6f4f2; --chu: #1d1d1f; --xam: #666; --vien: #e4e0dc; --xanh: #1b7a3d; --vang: #fff4d6; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 17px; line-height: 1.5; color: var(--chu); background: var(--nen); }
-  header { background: var(--do); color: #fff; padding: 14px 16px 16px; }
-  header .dv { font-size: 13px; letter-spacing: .5px; text-transform: uppercase; opacity: .9; }
-  header h1 { margin: 2px 0 0; font-size: 21px; line-height: 1.25; }
-  header a { color: #fff; text-decoration: none; }
+  header { background: #f8c846; color: #1d1d1f; padding: 14px 16px 14px; border-bottom: 3px solid #e0a800; }
+  header .dv { font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color: #8c1d17; font-weight: 700; }
+  header h1 { margin: 2px 0 0; font-size: 21px; line-height: 1.25; color: #1d1d1f; }
+  header a { color: inherit; text-decoration: none; }
+  header .truc-ban { display: inline-block; margin-top: 10px; background: #fff; color: #1d1d1f; border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 15.5px; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
   main { max-width: 720px; margin: 0 auto; padding: 14px 14px 40px; }
   h2 { font-size: 20px; margin: 6px 0 10px; color: var(--do2); }
   h3 { font-size: 17px; margin: 14px 0 6px; }
@@ -80,10 +82,12 @@
 <header>
   <a href="#/"><div class="dv">Công an xã Bờ Ngoong</div>
   <h1>Hướng dẫn tích hợp tài khoản an sinh xã hội</h1></a>
+  <a class="truc-ban" href="tel:02693502339">☎ Trực ban Công an xã: 0269 350 2339</a>
 </header>
 <main id="app"></main>
 <footer>
-  Công an xã Bờ Ngoong · Trang hướng dẫn miễn phí cho người dân.<br>
+  Công an xã Bờ Ngoong · Trực ban: <a href="tel:02693502339" style="color:inherit;font-weight:700">0269 350 2339</a><br>
+  Trang hướng dẫn miễn phí cho người dân.<br>
   Cán bộ <b>không bao giờ</b> hỏi mật khẩu hay mã OTP của bạn.
 </footer>
 
@@ -96,7 +100,7 @@ const CAU_HINH = {
   // Hiện số điện thoại CSKV công khai trên trang? (false: chỉ hiện tên CSKV)
   HIEN_SDT_CSKV: false,
   DIA_CHI: "Trụ sở Công an xã Bờ Ngoong",
-  SDT_TRUC_BAN: ""   // số trực ban của Công an xã (để trống nếu chưa công bố)
+  SDT_TRUC_BAN: "0269 350 2339"   // số trực ban của Công an xã
 };
 const VIDEO_DANG_NHAP = "zkz4HfmVzws";   // video YouTube hướng dẫn đăng nhập / lấy lại mật khẩu VNeID
 // Danh sách video ở mục "Xem video hướng dẫn" — thêm video: copy 1 dòng, đổi mã YouTube (phần sau youtu.be/) và tiêu đề
