@@ -191,15 +191,21 @@ function them(loai, html, goi, link) {
 }
 
 // Địa chỉ ứng dụng web Apps Script (xem tro-ly-gemini.gs). Để trống = chỉ dùng kịch bản từ khóa.
-const TRO_LY_URL = "https://script.google.com/macros/s/AKfycbyy1LBToGME_3bDWHJtqQUrjwlPGw4IZIOVd9C0XwXi2I3wJPYmgVVUNLtPkyWqiM8JGw/exec";
+const TRO_LY_URL = "";
 let lichSu = [];
 
 async function hoiAI(cau) {
-  const phanHoi = await fetch(TRO_LY_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify({ cau: cau, lich: lichSu })
-  });
+  const bo = new AbortController();
+  const het = setTimeout(() => bo.abort(), 25000); // quá 25 giây thì dùng bộ từ khóa
+  let phanHoi;
+  try {
+    phanHoi = await fetch(TRO_LY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ cau: cau, lich: lichSu }),
+      signal: bo.signal
+    });
+  } finally { clearTimeout(het); }
   const du = await phanHoi.json();
   if (du.tra_loi) return du.tra_loi;
   throw new Error(du.loi || "không có trả lời");
