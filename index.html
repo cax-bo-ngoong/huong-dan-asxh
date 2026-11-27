@@ -201,13 +201,17 @@ TRANG["mat-khau"] = (_, q) => {
   $app.innerHTML = `${lui("#/")}<h2>Lấy lại mật khẩu VNeID</h2>
   <div class="the"><h3 style="margin-top:0">🎬 Video hướng dẫn</h3>
     ${khungVideo({ id: VIDEO_DANG_NHAP, ten: "Video hướng dẫn đăng nhập VNeID" })}</div>
+  <div class="canh-bao">📌 Cần chuẩn bị: <b>thẻ Căn cước gắn chip</b> (bản gốc), <b>điện thoại có NFC</b>, và <b>SIM số điện thoại đã đăng ký VNeID</b> để nhận mã OTP.</div>
   <div class="the"><h3 style="margin-top:0">Các bước</h3><ol class="buoc">
     <li>Mở ứng dụng <b>VNeID</b>. Ở màn hình đăng nhập bấm <b>“Quên mật khẩu”</b>.</li>
-    <li>Nhập <b>số định danh cá nhân</b> (12 số trên thẻ Căn cước) và <b>số điện thoại đã đăng ký VNeID</b>, bấm tiếp tục.</li>
-    <li>Nhập <b>mã OTP</b> được gửi về số điện thoại đó (tin nhắn SMS).</li>
-    <li>Đặt <b>mật khẩu mới</b> theo yêu cầu của ứng dụng (thường gồm chữ hoa, chữ thường, số và ký tự đặc biệt), rồi xác nhận.</li>
-    <li>Đăng nhập lại bằng mật khẩu mới. Lần đầu trên điện thoại mới, ứng dụng có thể yêu cầu xác thực thêm (OTP, khuôn mặt).</li>
+    <li>Nhập <b>Số định danh cá nhân</b> (12 số trên thẻ Căn cước) và <b>Số điện thoại</b> đã đăng ký VNeID.</li>
+    <li>Mục <b>“Vui lòng chọn phương thức xác thực”</b>: chọn <b>“Xác thực NFC bằng thẻ Căn cước/CCCD”</b>, rồi bấm <b>“Gửi yêu cầu”</b>.
+      <div class="phu">Cách khác: “Nhập thông tin xác thực” (trả lời các thông tin cá nhân theo yêu cầu).</div></li>
+    <li><b>Áp thẻ Căn cước vào lưng điện thoại</b> (gần camera) để quét chip NFC, giữ yên đến khi báo đọc xong. Nên tháo ốp lưng, bật NFC trong Cài đặt.</li>
+    <li>Nhập <b>mã OTP</b> gửi về số điện thoại (tin nhắn SMS). Nếu ứng dụng yêu cầu, xác thực thêm <b>khuôn mặt</b>.</li>
+    <li>Đặt <b>mật khẩu mới</b> (thường gồm chữ hoa, chữ thường, số và ký tự đặc biệt), xác nhận rồi <b>đăng nhập lại</b>.</li>
   </ol>
+  <p class="phu">Trên màn hình Quên mật khẩu còn có nút <b>“Xem hướng dẫn”</b> của VNeID.</p>
   <p class="phu">Tên nút có thể hơi khác tùy phiên bản VNeID. Không nhờ người lạ làm hộ, không đọc mã OTP cho ai.</p></div>
   <div class="nhom-nut">
     <a class="nut nut-xanh" href="#/${sau}">✅ Đã đăng nhập được → ${sau === "mo-tai-khoan" ? "Mở tài khoản ngân hàng" : "Tích hợp tài khoản"}</a>
