@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xem trước: trang chính + khung chat (chưa triển khai)</title>
+<style>
+  body { margin: 0; min-height: 100vh; background: #dfe8f0; display: grid; place-items: center; font-family: "Segoe UI", Arial, sans-serif; }
+  .may { position: relative; width: 390px; height: 844px; border-radius: 44px; border: 12px solid #1c1f2e; background: #fff; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+  .may iframe.trang { width: 100%; height: 100%; border: 0; display: block; }
+  .may iframe.chat { position: absolute; right: 0; bottom: 0; width: 390px; height: 100px; border: 0; background: transparent; transition: height .2s ease; }
+  .may iframe.chat.mo { height: 760px; top: 0; }
+  .nhan { position: fixed; top: 14px; left: 0; right: 0; text-align: center; font-size: 14px; color: #55606b; }
+  .nhan b { color: #2b5f80; }
+</style>
+</head>
+<body>
+<div class="nhan">Xem trước (<b>chưa triển khai</b>): trang chính + khung chat. Bấm 💬 để thử.</div>
+<div class="may">
+  <iframe class="trang" src="index.html#/" title="Trang chính"></iframe>
+  <iframe class="chat" id="chat" src="thiet-ke-chat.html?nhung=1&v=4" title="Khung chat"></iframe>
+</div>
+<script>
+  window.addEventListener("message", e => {
+    const f = document.getElementById("chat");
+    if (!e.data || !e.data.chat) return;
+    f.classList.toggle("mo", e.data.chat === "mo");
+  });
+</script>
+</body>
+</html>
