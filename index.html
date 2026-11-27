@@ -59,6 +59,13 @@
   .hinh-vneid { background: #fff; border: 1px solid var(--vien); border-radius: 12px; padding: 10px; font-size: 14.5px; }
   .hinh-vneid .o { border: 1px solid #ccc; border-radius: 8px; padding: 8px; margin: 4px 0 8px; }
   .hinh-vneid .o.chon-o { outline: 3px solid #ffb400; }
+  .tai { display: flex; gap: 8px; margin: 8px 0 2px; }
+  .nut-tai { flex: 1; display: block; text-align: center; text-decoration: none; border-radius: 10px; padding: 9px 6px; font-weight: 700; font-size: 15.5px; color: #fff; background: #111; line-height: 1.15; }
+  .nut-tai small { display: block; font-weight: 500; font-size: 11.5px; opacity: .85; }
+  .nut-tai.and { background: #01875f; }
+  .nut-tai.mo { opacity: .6; }
+  .the-tai { padding: 12px; }
+  .the-tai .the-dt b { font-size: 17px; }
   .hinh-buoc { display: flex; gap: 8px; justify-content: center; margin: 10px 0 4px; flex-wrap: wrap; }
   .hinh-buoc img { width: 150px; max-width: 46%; height: auto; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.12); background: #fff; }
   .hinh-buoc img:only-child { width: 180px; max-width: 70%; }
@@ -123,6 +130,15 @@ const $app = document.getElementById("app");
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const B = id => BANKS.find(b => b.id === id);
 const icon = (b, to) => `<i class="logo" style="background:${b.color}${to ? ";width:46px;height:46px;font-size:12px;border-radius:12px;flex:none;color:#fff;font-style:normal;font-weight:800;display:grid;place-items:center" : ""}">${AB[b.id] || esc(b.name.slice(0,4))}</i>`;
+// Link tải app chính thức (đã đối chiếu nhà phát triển trên App Store / Google Play, 11/2026)
+const VNEID_APP = { ios: "1582750372", and: "com.vnid" };
+const LA_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent), LA_AND = /Android/i.test(navigator.userAgent);
+const nutTai = a => {
+  if (!a || !(a.ios || a.and)) return "";
+  const ios = a.ios ? `<a class="nut-tai ios${LA_AND ? " mo" : ""}" href="https://apps.apple.com/vn/app/id${a.ios}" target="_blank" rel="noopener">🍎 App Store<small>cho iPhone</small></a>` : "";
+  const and = a.and ? `<a class="nut-tai and${LA_IOS ? " mo" : ""}" href="https://play.google.com/store/apps/details?id=${a.and}" target="_blank" rel="noopener">▶ CH Play<small>cho Android</small></a>` : "";
+  return `<div class="tai">${LA_IOS ? ios + and : and + ios}</div>`;
+};
 // Hình minh họa cho từng bước (ảnh điện thoại xuất từ tờ hướng dẫn)
 const VN = n => `anh/buoc/tich-hop-vneid-${n}.jpg`;
 const hinh = (...src) => `<div class="hinh-buoc">${src.map(s => `<img src="${s}" loading="lazy" alt="Hình minh họa bước">`).join("")}</div>`;
@@ -139,7 +155,7 @@ function luoiNganHang(link, loc) {
   <div class="luoi" id="luoi">${BANKS_SX.filter(loc || (() => true)).map(b =>
     `<a class="nh${UU_TIEN.includes(b.id) ? " uu-tien" : ""}" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}" href="${link(b)}">${icon(b)}<span>${esc(b.name)}${UU_TIEN.includes(b.id) ? '<br><small class="phu">⭐ Khuyên dùng</small>' : ""}</span></a>`).join("")}</div>`;
 }
-window.locNH = q => { q = q.trim().toLowerCase(); document.querySelectorAll("#luoi .nh").forEach(a => a.classList.toggle("an-di", q && a.dataset.ten.indexOf(q) < 0)); };
+window.locNH = q => { q = q.trim().toLowerCase(); document.querySelectorAll("#luoi [data-ten]").forEach(a => a.classList.toggle("an-di", q && a.dataset.ten.indexOf(q) < 0)); };
 
 // ======================== CÁC TRANG ========================
 const TRANG = {};
@@ -150,6 +166,7 @@ TRANG[""] = () => {
   <a class="nut nut-chinh nut-to" href="#/ho-tro">🙋 Cần cán bộ hỗ trợ trực tiếp<br><small>Để lại họ tên, làng, số điện thoại — cán bộ sẽ gọi lại</small></a>
   ${CANH_BAO_ROOT}
   <div class="chon" style="margin:4px 0 2px"><a class="nut nut-xanh" href="#/video">🎬 Xem video</a><a class="nut nut-phu" href="#/to/tich-hop-vneid">🖼️ Xem tờ hướng dẫn</a></div>
+  <a class="nut nut-nhat" href="#/tai-app" style="margin:10px 0 2px">📲 Tải ứng dụng VNeID và ngân hàng</a>
   <div class="the">
     <div class="hoi">1. Bạn có đăng nhập được ứng dụng <b>VNeID</b> không?</div>
     <div class="chon"><button class="nut nut-nhat" data-q="vneid" data-v="1">✅ Được</button><button class="nut nut-nhat" data-q="vneid" data-v="0">❌ Không được</button></div>
@@ -192,7 +209,7 @@ TRANG["tich-hop"] = (id) => {
   <h2>Tích hợp tài khoản ${esc(b.name)} lên VNeID</h2>
   ${b.id === "vietbank" ? `<div class="canh-bao">Lưu ý: trong VNeID (11/2026) mục <b>VIETBANK</b> có lúc hiện màu xám, chưa chọn được. Nếu gặp, hãy thử lại sau hoặc bấm “Làm không được” bên dưới.</div>` : ""}
   <div class="the"><ol class="buoc">
-    <li>Mở ứng dụng <b>VNeID</b>, đăng nhập (tài khoản định danh <b>mức 2</b>).${hinh(VN(1))}</li>
+    <li>Mở ứng dụng <b>VNeID</b>, đăng nhập (tài khoản định danh <b>mức 2</b>). Chưa có app thì tải tại đây:${nutTai(VNEID_APP)}${hinh(VN(1))}</li>
     <li>Chọn <b>Ví giấy tờ</b> → <b>Tích hợp thông tin</b> → <b>Tạo mới yêu cầu</b>.${hinh(VN(2), VN(3))}</li>
     <li>Ở màn hình <b>“Nhập thông tin tích hợp”</b>, mục <b>Loại thông tin</b> chọn <b>tài khoản thanh toán / tài khoản ngân hàng</b>.${hinh(VN(4))}</li>
     <li>Mục <b>Nhà cung cấp</b>: gõ tìm và chọn <span class="nhan" style="font-weight:800">“${esc(b.vneid)}”</span>.
@@ -218,7 +235,7 @@ TRANG["mat-khau"] = (_, q) => {
     ${khungVideo({ id: VIDEO_DANG_NHAP, ten: "Video hướng dẫn đăng nhập VNeID" })}</div>
   <div class="canh-bao">📌 Cần chuẩn bị: <b>thẻ Căn cước gắn chip</b> (bản gốc), <b>điện thoại có NFC</b>, và <b>SIM số điện thoại đã đăng ký VNeID</b> để nhận mã OTP.</div>
   <div class="the"><h3 style="margin-top:0">Các bước</h3><ol class="buoc">
-    <li>Mở ứng dụng <b>VNeID</b>. Ở màn hình đăng nhập bấm <b>“Quên mật khẩu”</b>.${hinh(VN(9))}</li>
+    <li>Mở ứng dụng <b>VNeID</b>. Ở màn hình đăng nhập bấm <b>“Quên mật khẩu”</b>. Chưa có app thì tải tại đây:${nutTai(VNEID_APP)}${hinh(VN(9))}</li>
     <li>Nhập <b>Số định danh cá nhân</b> (12 số trên thẻ Căn cước) và <b>Số điện thoại</b> đã đăng ký VNeID.</li>
     <li>Mục <b>“Vui lòng chọn phương thức xác thực”</b>: chọn <b>“Xác thực NFC bằng thẻ Căn cước/CCCD”</b>, rồi bấm <b>“Gửi yêu cầu”</b>.
       <div class="phu">Cách khác: “Nhập thông tin xác thực” (trả lời các thông tin cá nhân theo yêu cầu).</div>${hinh(VN(10))}</li>
@@ -249,7 +266,7 @@ TRANG["ngan-hang"] = (id) => {
   <div class="the-dt" style="margin:4px 0 6px">${icon(b, true)}<div><h2 style="margin:0">Mở tài khoản ${esc(b.name)}</h2><div class="phu">${esc(b.full)}</div></div></div>
   <div class="the"><h3 style="margin-top:0">Cần chuẩn bị</h3>
     <p>📱 Điện thoại có Internet, camera tốt, nên có <b>NFC</b> · 📶 SIM ${esc(b.sim || "")} <b>chính chủ</b> · 💳 <b>Thẻ Căn cước gắn chip</b> · 💡 Chỗ đủ sáng</p></div>
-  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${hinhBuoc(b, i)}</li>`).join("")}</ol></div>
+  <div class="the"><ol class="buoc">${st.map((x, i) => `<li>${x}${i === 0 ? nutTai(b) : ""}${hinhBuoc(b, i)}</li>`).join("")}</ol></div>
   ${b.notes && b.notes.length ? `<div class="the"><h3 style="margin-top:0">📌 Lưu ý riêng của ${esc(b.name)}</h3><ul>${b.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>` : ""}
   <div class="the the-dt"><div style="flex:1">📞 Tổng đài ${esc(b.name)}</div>${b.hotline ? `<a class="so" href="tel:${b.hotline.replace(/\s/g, "")}">${esc(b.hotline)}</a>` : `<span class="phu">Xem trong ứng dụng</span>`}</div>
   <div class="nhom-nut">
@@ -363,6 +380,20 @@ TRANG["jailbreak"] = () => {
   <h3>Dấu hiệu</h3><ul><li>Ứng dụng báo <b>“thiết bị không an toàn”</b>, “thiết bị đã bị can thiệp”, hoặc tự thoát ngay khi mở.</li><li>Máy mua lại đã qua sửa chữa, cài phần mềm lạ.</li></ul>
   <h3>Cách xử lý</h3><ul><li>Dùng <b>điện thoại khác</b> chưa bị can thiệp (của bạn hoặc người thân, nhưng tài khoản phải là của bạn).</li><li>Mang máy ra cửa hàng uy tín để <b>cài lại phần mềm gốc</b> (khôi phục cài đặt gốc).</li><li>Hoặc liên hệ Công an xã để được hướng dẫn.</li></ul></div>
   <div class="nhom-nut">${nutHoTro("Điện thoại bị jailbreak/root, không dùng được ứng dụng")}</div>`;
+};
+
+TRANG["tai-app"] = () => {
+  $app.innerHTML = `${lui("#/")}<h2>📲 Tải ứng dụng</h2>
+  <p class="phu">Bấm nút đúng loại điện thoại: <b>App Store</b> cho iPhone, <b>CH Play</b> cho Android. Các nút dẫn thẳng tới <b>ứng dụng chính thức</b>.</p>
+  <div class="the the-tai"><div class="the-dt"><i class="logo" style="background:#b3261e;width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;font-style:normal;font-size:24px">🛡️</i>
+    <div><b>VNeID</b><div class="phu">Định danh điện tử – Bộ Công an. Dùng để tích hợp tài khoản nhận an sinh xã hội.</div></div></div>${nutTai(VNEID_APP)}</div>
+  <div class="canh-bao">⚠️ Chỉ cài ứng dụng từ các nút trên trang này hoặc tìm <b>đúng tên</b> trên CH Play / App Store.
+    <b>Không cài</b> ứng dụng có chữ <b>“Được tài trợ”</b>, ứng dụng <b>vay tiền nhanh</b> hiện lẫn trong kết quả tìm kiếm.</div>
+  <h3>Ngân hàng / ví điện tử</h3>
+  <input class="tim" type="search" placeholder="🔍 Gõ tên ngân hàng, ví dụ: Agribank" oninput="locNH(this.value)">
+  <div id="luoi">${BANKS_SX.map(b => `<div class="the the-tai" data-ten="${esc((b.name + " " + b.vneid + " " + b.app).toLowerCase())}">
+    <div class="the-dt">${icon(b, true)}<div><b>${esc(b.name)}</b>${UU_TIEN.includes(b.id) ? ' <small class="phu">⭐ Khuyên dùng</small>' : ""}<div class="phu">Ứng dụng: ${esc(b.app)}</div></div></div>
+    ${nutTai(b)}<a class="phu" href="#/ngan-hang/${b.id}">Xem cách mở tài khoản ${esc(b.name)} →</a></div>`).join("")}</div>`;
 };
 
 TRANG["video"] = () => {
