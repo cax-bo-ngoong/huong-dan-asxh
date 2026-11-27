@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f8c846">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong">
+<meta property="og:description" content="Mở tài khoản ngân hàng online, tích hợp VNeID, lấy lại mật khẩu, tải app — có hình từng bước. Trực ban: 0269 350 2339">
+<meta property="og:url" content="https://cax-bo-ngoong.github.io/huong-dan-asxh/">
+<meta property="og:image" content="https://cax-bo-ngoong.github.io/huong-dan-asxh/anh/chia-se.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <title>Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong</title>
 <meta name="description" content="Hướng dẫn người dân xã Bờ Ngoong tích hợp tài khoản ngân hàng lên VNeID để nhận tiền an sinh xã hội.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
@@ -74,6 +81,13 @@
   .to-anh { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--vien); background: #fff; }
   .video { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 6px; }
   .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .chia-se { background: #fff; border: 2px solid #f0c75a; border-radius: 16px; padding: 14px; max-width: 420px; margin: 0 auto 16px; color: var(--chu); font-size: 15px; }
+  .cs-tieu-de { font-weight: 800; font-size: 17px; margin-bottom: 8px; }
+  .cs-qr { width: 210px; margin: 0 auto 6px; }
+  .cs-qr svg { display: block; width: 100%; height: auto; }
+  .cs-nut { display: grid; gap: 8px; margin-top: 10px; }
+  .cs-link { width: 100%; margin-top: 8px; font-size: 14px; padding: 8px; border: 1px dashed #cfc8c2; border-radius: 8px; text-align: center; color: var(--xam); background: #faf8f6; }
+  .cs-tb { margin-top: 6px; font-weight: 700; color: var(--xanh); min-height: 1em; }
   footer { text-align: center; color: var(--xam); font-size: 13.5px; padding: 18px 14px 30px; }
   .an-di { display: none; }
 </style>
@@ -86,12 +100,25 @@
 </header>
 <main id="app"></main>
 <footer>
+  <div class="chia-se">
+    <div class="cs-tieu-de">📤 Chia sẻ trang này cho người khác</div>
+    <div id="qr-chia-se" class="cs-qr"></div>
+    <div class="phu">Quét bằng <b>camera điện thoại</b> hoặc <b>Zalo</b> để mở trang</div>
+    <div class="cs-nut">
+      <button class="nut nut-chinh" type="button" onclick="chiaSe()">📤 Chia sẻ (Zalo, Messenger…)</button>
+      <a class="nut nut-nhat" href="anh/ma-qr.png" download="Ma-QR-huong-dan-ASXH-Bo-Ngoong.png">⬇️ Tải ảnh mã QR</a>
+      <button class="nut nut-phu" type="button" onclick="saoChep()">📋 Sao chép link</button>
+    </div>
+    <input id="cs-link" class="cs-link" readonly value="https://cax-bo-ngoong.github.io/huong-dan-asxh/" onclick="this.select()">
+    <div id="cs-tb" class="cs-tb"></div>
+  </div>
   Công an xã Bờ Ngoong · Trực ban: <a href="tel:02693502339" style="color:inherit;font-weight:700">0269 350 2339</a><br>
   Trang hướng dẫn miễn phí cho người dân.<br>
   Cán bộ <b>không bao giờ</b> hỏi mật khẩu hay mã OTP của bạn.
 </footer>
 
 <script src="banks.js?v=20261127-3"></script>
+<script src="qr.js?v=1"></script>
 <script>
 // ======================== CẤU HÌNH ========================
 const CAU_HINH = {
@@ -424,6 +451,20 @@ function moTrang() {
 }
 window.addEventListener("hashchange", moTrang);
 moTrang();
+
+// ======================== CHIA SẺ TRANG + MÃ QR ========================
+const URL_TRANG = "https://cax-bo-ngoong.github.io/huong-dan-asxh/";
+try { document.getElementById("qr-chia-se").innerHTML = QR.svg(QR.tao(URL_TRANG, "Q")); } catch (e) {}
+const thongBaoCS = m => { const t = document.getElementById("cs-tb"); t.textContent = m; setTimeout(() => { t.textContent = ""; }, 5000); };
+window.saoChep = async () => {
+  try { await navigator.clipboard.writeText(URL_TRANG); thongBaoCS("✅ Đã sao chép link — dán vào Zalo để gửi."); }
+  catch (e) { const i = document.getElementById("cs-link"); i.focus(); i.select(); thongBaoCS("Bấm giữ vào ô link ở trên để sao chép."); }
+};
+window.chiaSe = async () => {
+  const d = { title: "Hướng dẫn tích hợp tài khoản an sinh xã hội – Công an xã Bờ Ngoong",
+    text: "Hướng dẫn tích hợp tài khoản an sinh xã hội (Công an xã Bờ Ngoong):", url: URL_TRANG };
+  if (navigator.share) { try { await navigator.share(d); } catch (e) {} } else saoChep();
+};
 
 // Lấy CSKV mới nhất từ Google Sheet (không có dữ liệu người dân)
 if (CAU_HINH.WEBAPP_URL) fetch(CAU_HINH.WEBAPP_URL).then(r => r.json()).then(j => {
